@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using FYP2.Models;
+using FYP.Models;
 
-namespace FYP2.Controllers
+namespace FYP.Controllers
 {
     public class HomeController : Controller
     {

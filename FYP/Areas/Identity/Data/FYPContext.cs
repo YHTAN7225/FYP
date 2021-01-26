@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace FYP2.Data
+namespace FYP.Data
 {
-    public class FYP2Context : IdentityDbContext<IdentityUser>
+    public class FYPContext : IdentityDbContext<IdentityUser>
     {
-        public FYP2Context(DbContextOptions<FYP2Context> options)
+        public FYPContext(DbContextOptions<FYPContext> options)
             : base(options)
         {
         }

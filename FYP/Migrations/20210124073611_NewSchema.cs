@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace FYP2.Migrations
+namespace FYP.Migrations
 {
     public partial class NewSchema : Migration
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace FYP2.Models
+namespace FYP.Models
 {
     public class ErrorViewModel
     {
