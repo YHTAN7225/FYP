@@ -1,5 +1,49 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model FYP.Models.NewUserViewModel
+
 @{
+    ViewData["Title"] = "CreateUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create New User</h1>
+<h5>Create a new user under your management. You will be able to view this account's profile and share files available to this account.</h5>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateUser">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="email" class="control-label">Email</label>
+                <input asp-for="email" class="form-control" />
+                <span asp-validation-for="email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="password" class="control-label">Password</label>
+                <input asp-for="password" class="form-control" type="password"/>
+                <span asp-validation-for="password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to Home</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+@if (ViewBag.Success != null)
+{
+<script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Success");
+                window.location.href = "/Admin/Index";
+            };
+</script>
 }
