@@ -20,6 +20,7 @@ namespace FYP.Areas.Identity
                         context.Configuration.GetConnectionString("FYPContextConnection")));
 
                 services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                    .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<FYPContext>();
             });
         }

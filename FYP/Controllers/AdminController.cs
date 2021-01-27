@@ -22,5 +22,10 @@ namespace FYP.Controllers
         {
             return View();
         }
+
+        public IActionResult CreateUser()
+        {
+            return View();
+        }
     }
 }
