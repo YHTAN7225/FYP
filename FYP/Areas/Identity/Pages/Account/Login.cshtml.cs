@@ -82,8 +82,22 @@ namespace FYP.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    var userWithMatchEmail = await _userManager.FindByEmailAsync(Input.Email);
+                    var userCurrentRole = _userManager.GetRolesAsync(userWithMatchEmail);
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    if (userCurrentRole.Result.Contains("admin"))
+                    {
+                        return LocalRedirect("~/Admin/Index");
+                    }
+                    else if (userCurrentRole.Result.Contains("user"))
+                    {
+                        return LocalRedirect("~/User/Index");
+                    }
+                    else
+                    {
+                        return LocalRedirect(returnUrl);
+                    }
+                    
                 }
                 if (result.RequiresTwoFactor)
                 {
