@@ -54,19 +54,37 @@ namespace FYP.Controllers
             }
 
             if (ModelState.IsValid) {
-                model.admin = _userManager.GetUserId(User);
-                var newUser = new IdentityUser { UserName = model.email, Email = model.email };
-                var result = await _userManager.CreateAsync(newUser, model.password);
+                model.Admin = _userManager.GetUserId(User);
+                var newUser = new IdentityUser { UserName = model.Email, Email = model.Email };
+                var result = await _userManager.CreateAsync(newUser, model.Password);
 
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(newUser, "User");
+                    AdminAccess ac = _context.AdminAccess.Where(x => x.AdminId.Equals(_userManager.GetUserId(User))).First();
+
+                    if (ac.UserList == null)
+                    {
+                        ac.UserList = newUser.Id;
+                    }
+                    else 
+                    {
+                        ac.UserList = ac.UserList + "|" + newUser.Id;
+                    }
+                    _context.AdminAccess.Update(ac);
+
+                    UserAccess ua = new UserAccess(newUser.Id, _userManager.GetUserId(User));
+                    _context.UserAccess.Add(ua);
+
+                    _context.SaveChanges();
+
+                    ViewBag.Success = "A new user has been created!";
                 }
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-                ViewBag.Success = "A New User has been created!";
+                
             }
 
             

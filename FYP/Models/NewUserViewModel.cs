@@ -5,11 +5,11 @@ namespace FYP.Models
     public class NewUserViewModel
     {
         [Required]
-        public string email { get; set; }
+        public string Email { get; set; }
 
-        public string admin { get; set; }
+        public string Admin { get; set; }
 
         [Required]
-        public string password { get; set; }
+        public string Password { get; set; }
     }
 }
