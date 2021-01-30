@@ -58,7 +58,7 @@ namespace FYP.Areas.Identity.Pages.Account
 
             [Required]
             [StringLength(20, ErrorMessage = "The organization name must be at least 6 characters long.", MinimumLength = 6)]
-            [RegularExpression (@"^[a-z0-9\s]*$", ErrorMessage = "The organization name must only contain lower-case letter and numbers, no special character is allowed.")]
+            [RegularExpression (@"^[A-Za-z0-9\s]*$", ErrorMessage = "The organization name must only contain lower-case letter and numbers, no special character is allowed.")]
             [Display(Name = "Organization Name")]
             public string OrganizationName { get; set; }
 

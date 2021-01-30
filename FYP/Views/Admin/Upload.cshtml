@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewData["Title"] = "Upload";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Upload</h1>
+
+<h5>Select a file(s) and upload to the cloud.</h5>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Upload" enctype="multipart/form-data" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="upload" multiple onchange=latestfunction()>
+                    <label class="custom-file-label" for="customFile"></label>
+                </div>
+            </div>
+
+            <div class="container">
+                <h5>Below are the selected files :</h5>
+                <table class="table" id="mytable">
+                    <tr>
+                        <th>File Name</th>
+                        <th>File Size</th>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Upload" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script>
+    function latestfunction(){
+        var table = document.getElementById("mytable");
+        var tableRows = table.getElementsByTagName('tr');
+
+        for (var x = tableRows.length - 1; x > 0; x--) {
+            table.removeChild(tableRows[x]);
+        }
+
+        var filelist = document.getElementById("upload");
+
+        for (var i = 0; i < filelist.files.length; i++) {
+            var row = document.createElement("tr");
+            var cell1 = document.createElement("td");
+            var cell2 = document.createElement("td");
+
+            cell1.appendChild(document.createTextNode(filelist.files[i].name));
+            cell2.appendChild(document.createTextNode(filelist.files[i].size));
+            cell2.appendChild(document.createTextNode(" byte"));
+
+            row.appendChild(cell1);
+            row.appendChild(cell2);
+
+            table.appendChild(row);
+        }
+    }
+
+
+</script>
+

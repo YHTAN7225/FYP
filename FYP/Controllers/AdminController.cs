@@ -40,7 +40,12 @@ namespace FYP.Controllers
             return View();
         }
 
-      [ActionName("CreateUser")]
+        public IActionResult Upload()
+        {
+            return View();
+        }
+
+        [ActionName("CreateUser")]
         public ActionResult CreateUser()
         {
             return View();
