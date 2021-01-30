@@ -15,11 +15,14 @@ namespace FYP.Controllers
     {
         private readonly FYPContext _context;
         private UserManager<IdentityUser> _userManager;
+        private Storage _storage;
 
         public AdminController(FYPContext context, UserManager<IdentityUser> userManager)
         {
             this._context = context;
             this._userManager = userManager;
+            this._storage = new Storage();
+            int asfasdf = 3;
         }
 
         public IActionResult Index()
@@ -73,7 +76,7 @@ namespace FYP.Controllers
                     }
                     _context.AdminAccess.Update(ac);
 
-                    UserAccess ua = new UserAccess(newUser.Id, _userManager.GetUserId(User));
+                    UserAccess ua = new UserAccess(newUser.Id, _userManager.GetUserId(User), ac.OrganizationName);
                     _context.UserAccess.Add(ua);
 
                     _context.SaveChanges();

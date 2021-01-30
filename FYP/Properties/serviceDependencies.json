@@ -4,12 +4,13 @@
       "type": "mssql",
       "connectionId": "FYPContextConnection"
     },
-    "secrets1": {
-      "type": "secrets"
-    },
     "storage1": {
       "type": "storage",
       "connectionId": "AzureStorageConnectionString"
+    },
+    "secrets1": {
+      "type": "secrets",
+      "connectionId": null
     }
   }
 }

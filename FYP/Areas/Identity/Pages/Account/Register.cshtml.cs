@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using FYP.Controllers;
 using FYP.Data;
 using FYP.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -56,7 +57,8 @@ namespace FYP.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The organization name must be at least 6 characters long.", MinimumLength = 6)]
+            [StringLength(20, ErrorMessage = "The organization name must be at least 6 characters long.", MinimumLength = 6)]
+            [RegularExpression (@"^[a-z0-9\s]*$", ErrorMessage = "The organization name must only contain lower-case letter and numbers, no special character is allowed.")]
             [Display(Name = "Organization Name")]
             public string OrganizationName { get; set; }
 
@@ -106,6 +108,8 @@ namespace FYP.Areas.Identity.Pages.Account
                     AdminAccess ac = new AdminAccess(user.Id, Input.OrganizationName);
                     _context.AdminAccess.AddRange(ac);
                     _context.SaveChanges();
+                    Storage storage = new Storage();
+                    storage.CreateNewFolder(user.Id); 
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

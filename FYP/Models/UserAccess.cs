@@ -13,11 +13,14 @@ namespace FYP.Models
 
         public string AdminId{ get; set; }
 
+        public string OrganizationName { get; set; }
+
         public string FileList { get; set; }
 
-        public UserAccess(string UserId, string AdminId) {
+        public UserAccess(string UserId, string AdminId, string OrganizationName) {
             this.UserId = UserId;
             this.AdminId = AdminId;
+            this.OrganizationName = OrganizationName;
         }
     }
 }

@@ -6,14 +6,17 @@
       "connectionId": "FYPContextConnection",
       "secretStore": null
     },
-    "secrets1": {
-      "type": "secrets.user"
-    },
     "storage1": {
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Storage/storageAccounts/storedocstorage",
       "type": "storage.azure",
       "connectionId": "AzureStorageConnectionString",
       "secretStore": "LocalSecretsFile"
+    },
+    "secrets1": {
+      "resourceId": null,
+      "type": "secrets.user",
+      "connectionId": null,
+      "secretStore": null
     }
   }
 }
