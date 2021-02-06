@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 
 namespace FYP.Models
 {
-    public class FileViewModel
+    public class RetrievedFileViewModel
     {
         [Required]
-        public List<IFormFile> Files { get; set; }
-
+        public CloudFile RetrievedFile { get; set; }
 
     }
 }

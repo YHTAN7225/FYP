@@ -1,8 +1,45 @@
-﻿
+﻿@model IEnumerable<RetrievedFileViewModel>
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Index</h1>
+<h5>Belows are all the files available for this account:</h5>
+
+<p>
+    <a asp-action="Upload">Upload new files</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>File Name</th>
+            <th>Last Modified</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.RetrievedFile.Name</td>
+                <td>@item.RetrievedFile.Properties.LastModified.GetValueOrDefault().ToLocalTime().DateTime</td>
+                <td>
+                    @Html.ActionLink("Authorize", "Authorize", new { FileId = item.RetrievedFile.Properties.ETag }) |
+                    @Html.ActionLink("Delete", "Delete", new { FileName = item.RetrievedFile.Name })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (TempData["AuthorizeReturnMessage"] != null)
+{
+<script type="text/javascript">
+            window.onload = function () {
+                alert(TempData["AuthorizeReturnMessage"]);
+            };
+</script>
+}
 

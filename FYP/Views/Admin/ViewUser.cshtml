@@ -1,8 +1,37 @@
-﻿
+﻿@model IEnumerable<FYP.Models.UserInfo>
+
 @{
     ViewData["Title"] = "ViewUser";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var result = Model;
 }
 
 <h1>ViewUser</h1>
 
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                User Id
+            </th>
+            <th>
+                User Email
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserAccess.UserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

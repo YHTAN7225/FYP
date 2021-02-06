@@ -1,7 +1,7 @@
 ﻿@model FYP.Models.NewUserViewModel
 
 @{
-    ViewData["Title"] = "CreateUser";
+    ViewData["Title"] = "Create User";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -38,12 +38,11 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 
-@if (ViewBag.Success != null)
+@if (ViewBag.AuthorizeReturnMessage != null)
 {
 <script type="text/javascript">
             window.onload = function () {
-                alert("@ViewBag.Success");
-                window.location.href = "/Admin/Index";    
+                alert("@ViewBag.AuthorizeReturnMessage"); 
             };
 </script>
 }
