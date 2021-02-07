@@ -109,7 +109,7 @@ namespace FYP.Controllers
             if (ModelState.IsValid)
             {
                 model.Admin = _userManager.GetUserId(User);
-                var newUser = new IdentityUser { UserName = model.Email, Email = model.Email };
+                var newUser = new IdentityUser { UserName = model.Email, Email = model.Email, EmailConfirmed = true }; // email is confrimed by default
                 var result = await _userManager.CreateAsync(newUser, model.Password);
 
                 if (result.Succeeded)
@@ -124,6 +124,7 @@ namespace FYP.Controllers
                     {
                         ac.UserList = ac.UserList + "|" + newUser.Id;
                     }
+
                     _context.AdminAccess.Update(ac);
                     UserAccess ua = new UserAccess(newUser.Id, _userManager.GetUserId(User), ac.OrganizationName);
                     _context.UserAccess.Add(ua);
@@ -207,7 +208,7 @@ namespace FYP.Controllers
         public ActionResult AuthorizeAction(string UserId, string FileId)
         {
             UserAccess UserAccess = _context.UserAccess.Where(x => x.UserId.Equals(UserId)).First();
-            if (UserAccess.FileList == "")
+            if (UserAccess.FileList == null)
             {
                 UserAccess.FileList = FileId;
             }

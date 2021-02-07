@@ -38,11 +38,11 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 
-@if (ViewBag.AuthorizeReturnMessage != null)
+@if (ViewBag.CreateUserReturnMessage != null)
 {
 <script type="text/javascript">
             window.onload = function () {
-                alert("@ViewBag.AuthorizeReturnMessage"); 
+                alert("@ViewBag.CreateUserReturnMessage"); 
             };
 </script>
 }
