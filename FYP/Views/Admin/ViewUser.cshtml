@@ -7,7 +7,7 @@
 }
 
 <h1>ViewUser</h1>
-
+<h5>Belows are the users under the management of your account.</h5>
 <p>
     <a asp-action="CreateUser">Create a new User</a>
 </p>
@@ -20,18 +20,32 @@
             <th>
                 User Email
             </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserAccess.UserId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserAccess.UserId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.ActionLink("Delete User", "DeleteUser", new { UserId = item.UserAccess.UserId })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@if (TempData["DeleteUserReturnMessage"] != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@TempData["DeleteUserReturnMessage"]");
+            };
+    </script>
+}

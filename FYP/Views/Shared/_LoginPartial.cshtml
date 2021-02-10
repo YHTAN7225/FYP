@@ -17,10 +17,10 @@
                     <a class="nav-link text-light" asp-area="" asp-controller="Admin" asp-action="ViewUser">View Users</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-light" asp-area="" asp-controller="Admin" asp-action="CreateUser">Create Users</a>
+                    <a class="nav-link text-light" asp-area="" asp-controller="Admin" asp-action="Files">Files</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-light" asp-area="" asp-controller="Admin" asp-action="Upload">Upload File</a>
+                    <a class="nav-link text-light" asp-area="" asp-controller="Admin" asp-action="Approve">Approve</a>
                 </li>
             </ul>
         </div>
@@ -48,10 +48,10 @@
                     <a class="nav-link text-light" asp-area="" asp-controller="User" asp-action="Files">Files</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-light" asp-area="" asp-controller="User" asp-action="Share">Share</a>
+                    <a class="nav-link text-light" asp-area="" asp-controller="User" asp-action="GenerateLink">Generate Link</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-light" asp-area="" asp-controller="User" asp-action="RequestFile">Request</a>
+                    <a class="nav-link text-light" asp-area="" asp-controller="User" asp-action="Sign">Sign</a>
                 </li>
             </ul>
         </div>
@@ -76,6 +76,16 @@ else
             <li class="nav-item">
                 <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="AboutUs">AboutUs</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy Policy">Privacy</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="FAQ">FAQ</a>
+            </li>
+
         </ul>
     </div>
     <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
@@ -86,6 +96,7 @@ else
             <li class="nav-item">
                 <a class="nav-link text-light" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
             </li>
+
         </ul>
     </div>
 }

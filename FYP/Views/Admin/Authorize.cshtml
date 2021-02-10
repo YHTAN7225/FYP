@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Authorize";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var FileId = ViewData["FileId"];
+    var FileName = TempData["FileName"];
 }
 
 <h1>Authorize</h1>
@@ -34,7 +34,7 @@
                     @Html.DisplayFor(modelItem => item.UserName)
                 </td>
                 <td>
-                    <form asp-action="AuthorizeAction" asp-route-FileId="@FileId" asp-route-UserId="@item.UserAccess.UserId">
+                    <form asp-action="AuthorizeAction" asp-route-FileName="@FileName" asp-route-UserId="@item.UserAccess.UserId">
                         <input type="submit" value="Authorize" class="btn btn-danger" />
                     </form>
                 </td>

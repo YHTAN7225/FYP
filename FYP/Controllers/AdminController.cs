@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using FYP.Data;
 using FYP.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,15 +18,26 @@ namespace FYP.Controllers
         private readonly FYPContext _context;
         private UserManager<IdentityUser> _userManager;
         private Storage _storage;
+        private Security _security;
 
         public AdminController(FYPContext context, UserManager<IdentityUser> userManager)
         {
             this._context = context;
             this._userManager = userManager;
             this._storage = new Storage();
+            this._security = new Security();
         }
 
-        public IActionResult Index()
+        public IActionResult Index() {
+            return View();
+        }
+
+        public IActionResult Approve()
+        {
+            return View();
+        }
+
+        public IActionResult Files()
         {
             List<RetrievedFileViewModel> ModelList = new List<RetrievedFileViewModel>();
             var FileList = _storage.GetFileList(_userManager.GetUserId(User)).Result;
@@ -40,9 +52,7 @@ namespace FYP.Controllers
             return View(ModelList);
         }
 
-        [ActionName("ViewUser")]
-        public IActionResult ViewUser()
-        {
+        private List<UserInfo> GetUserList() {
             List<UserAccess> UserAccessList = _context.UserAccess.Where(x => x.AdminId.Equals(_userManager.GetUserId(User))).ToList();
             List<UserInfo> UserInfoList = new List<UserInfo>();
 
@@ -52,7 +62,37 @@ namespace FYP.Controllers
                 UserInfo userInfo = new UserInfo(item, username);
                 UserInfoList.Add(userInfo);
             }
-            return View(UserInfoList);
+
+            return UserInfoList;
+        }
+
+        [ActionName("ViewUser")]
+        public IActionResult ViewUser()
+        {
+            return View(GetUserList());
+        }
+
+        [ActionName("DeleteUser")]
+        public IActionResult DeleteUser(string UserId)
+        {
+            IdentityUser UserToBeDelete = _context.Users.Where(x => x.Id.Equals(UserId)).First();
+            UserAccess UserAccessToBeDelete = _context.UserAccess.Where(x => x.UserId.Equals(UserId)).First();
+
+            _context.Users.Remove(UserToBeDelete);
+            _context.SaveChangesAsync();
+            _context.UserAccess.Remove(UserAccessToBeDelete);
+            var result = _context.SaveChangesAsync();
+            result.Wait();
+
+            if (result.IsCompletedSuccessfully)
+            {
+                TempData["DeleteUserReturnMessage"] = "Successfully deleted this user!";
+            }
+            else {
+                TempData["DeleteUserReturnMessage"] = "Error when deleting this user!";
+            }
+            
+            return RedirectToAction("ViewUser", "Admin");
         }
 
 
@@ -180,9 +220,9 @@ namespace FYP.Controllers
         }
 
         [ActionName("Authorize")]
-        public ActionResult Authorize(string FileId)
+        public ActionResult Authorize(string FileName)
         {
-            if (FileId == null)
+            if (FileName == null)
             {
                 return BadRequest();
             }
@@ -196,32 +236,29 @@ namespace FYP.Controllers
                 UserInfo userInfo = new UserInfo(item, username);
                 UserInfoList.Add(userInfo);
             }
-
-            ViewData["FileId"] = FileId;
-
+            TempData["FileName"] = FileName;
             return View(UserInfoList);
         }
 
 
         [ActionName("AuthorizeAction")]
         [ValidateAntiForgeryToken]
-        public ActionResult AuthorizeAction(string UserId, string FileId)
+        public ActionResult AuthorizeAction(string UserId, string FileName)
         {
             UserAccess UserAccess = _context.UserAccess.Where(x => x.UserId.Equals(UserId)).First();
             if (UserAccess.FileList == null)
             {
-                UserAccess.FileList = FileId;
+                UserAccess.FileList = _security.Encrypt(FileName);
             }
             else {
-
                 string[] FileList = UserAccess.FileList.Split("|");
-                if (FileList.Contains(FileId))
+                if (FileList.Contains(_security.Encrypt(FileName)))
                 {
                     TempData["AuthorizeReturnMessage"] = "Selected user already have access to this file!";
                     return RedirectToAction("Index", "Admin");
                 }
                 else {
-                    UserAccess.FileList = UserAccess.FileList + "|" + FileId;
+                    UserAccess.FileList = UserAccess.FileList + "|" + _security.Encrypt(FileName);
                 }
             }
             _context.UserAccess.Update(UserAccess);

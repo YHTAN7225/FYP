@@ -1,0 +1,86 @@
+﻿@model FYP.Models.FileViewModel
+
+@{
+    ViewData["Title"] = "Upload";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var UserId = TempData["UserId"];
+    var UserName = TempData["UserName"];
+    var LinkId = TempData["LinkId"];
+}
+
+<h1>Upload</h1>
+
+<h5>Select a file and upload to this email : @UserName</h5>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Home" asp-action="FileSubmissionViaLinkResult" asp-route-UserId="@UserId" asp-route-LinkId="@LinkId" enctype="multipart/form-data" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <div class="custom-file">
+                    <input asp-for="Files" class="custom-file-input" id="upload" onchange=DisplayFilesName() />
+                    <label class="custom-file-label" for="customFile"></label>
+                </div>
+            </div>
+
+            <div class="container">
+                <h5>Below are the selected files :</h5>
+                <table class="table" id="fileTable" width="700px">
+                    <tr>
+                        <th>File Name</th>
+                        <th>File Size</th>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Upload" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script>
+    function DisplayFilesName() {
+        var table = document.getElementById("fileTable");
+        var tableRows = table.getElementsByTagName('tr');
+
+        for (var x = tableRows.length - 1; x > 0; x--) {
+            table.removeChild(tableRows[x]);
+        }
+
+        var filelist = document.getElementById("upload"); 
+
+        for (var i = 0; i < filelist.files.length; i++) {
+            var row = document.createElement("tr");
+            var cell1 = document.createElement("td");
+            var cell2 = document.createElement("td");
+
+            cell1.appendChild(document.createTextNode(filelist.files[i].name));
+            cell2.appendChild(document.createTextNode(filelist.files[i].size));
+            cell2.appendChild(document.createTextNode(" byte"));
+
+            row.appendChild(cell1);
+            row.appendChild(cell2);
+
+            table.appendChild(row);
+        }
+    }
+</script>
+
+@if (ViewBag.UploadReturnMessage != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.UploadReturnMessage");
+            };
+    </script>
+}

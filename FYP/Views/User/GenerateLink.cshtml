@@ -1,0 +1,25 @@
+﻿@model FYP.Models.FileViewModel
+
+@{
+    ViewData["Title"] = "GenerateLink";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Link = TempData["Link"];
+    string text = "";
+
+}
+
+<h1>Generate Link</h1>
+<h5>Generate a link to request file submission from people.</h5>
+
+<h5 class="alert-danger">NOTE : THE LINK GENERATED CAN ONLY BE USED ONCE!</h5>
+
+<form asp-action="GenerateLinkButton">
+    <div class="form-group">
+        <input type="submit" value="Generate" class="btn btn-primary" />
+    </div>
+</form>
+
+<h6>@Link</h6>
+
+
+

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FYP.Controllers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -22,5 +23,35 @@ namespace FYP.Models
             this.AdminId = AdminId;
             this.OrganizationName = OrganizationName;
         }
+
+        public void AddFileList(string fileId) {
+            Security security = new Security();
+            List<string> list = FileList.Split("|").ToList();
+
+            foreach (var item in list)
+            {
+                if (fileId != security.Decrypt(item))
+                {
+                    if (this.FileList == null)
+                    {
+                        this.FileList = item;
+                    }
+                    else
+                    {
+                        this.FileList = this.FileList + "|" + item;
+                    }
+                }
+
+            }
+
+            if (this.FileList == null)
+            {
+                this.FileList = fileId;
+            }
+            else {
+                this.FileList = this.FileList + "|" + fileId;            
+            }
+        }
+
     }
 }

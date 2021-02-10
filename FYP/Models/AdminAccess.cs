@@ -13,8 +13,6 @@ namespace FYP.Models
 
         public string OrganizationName { get; set; }
 
-        public string FileList { get; set; }
-
         public string UserList { get; set; }
 
         public AdminAccess(string AdminId, string OrganizationName)

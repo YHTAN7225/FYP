@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Files.Shares;
+using FYP.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
@@ -15,9 +16,11 @@ namespace FYP.Controllers
     public class Storage
     {
         private CloudStorageAccount StorageAccount;
+        private Security _security;
 
         public Storage() {
             this.StorageAccount = CloudStorageAccount.Parse(Constant.AzureConnectionString);
+            this._security = new Security();
         }
 
         public void CreateNewFolder(string FolderName)
@@ -26,12 +29,12 @@ namespace FYP.Controllers
             folder.CreateIfNotExistsAsync().Wait();
         }
 
-        public CloudFileShare GetFileShare(string UserId) {
-            return StorageAccount.CreateCloudFileClient().GetShareReference(UserId);
+        public CloudFileShare GetFileShare(string AdminId) {
+            return StorageAccount.CreateCloudFileClient().GetShareReference(AdminId);
         }
 
-        public async Task<List<CloudFile>> GetFileList(string UserId) {
-            CloudFileShare FileShare = GetFileShare(UserId);
+        public async Task<List<CloudFile>> GetFileList(string AdminId) {
+            CloudFileShare FileShare = GetFileShare(AdminId);
             FileContinuationToken continuationToken = null;
             List<IListFileItem> results = new List<IListFileItem>();
             do
@@ -52,14 +55,14 @@ namespace FYP.Controllers
             return FileList;
         }
 
-        public CloudFile GetFile(string UserId, string FileName) {
-            CloudFileShare FileShare = GetFileShare(UserId);
+        public CloudFile GetFile(string AdminId, string FileName) {
+            CloudFileShare FileShare = GetFileShare(AdminId);
             CloudFile file = FileShare.GetRootDirectoryReference().GetFileReference(FileName);
             return file;
         }
 
-        public Boolean UploadFile(string UserId, IFormFile file) {
-            CloudFileShare FileShare = GetFileShare(UserId);
+        public Boolean UploadFile(string AdminId, IFormFile file) {
+            CloudFileShare FileShare = GetFileShare(AdminId);
 
             CloudFile FileToUpload = FileShare.GetRootDirectoryReference().GetFileReference(file.FileName);
             Task result = FileToUpload.UploadFromStreamAsync(file.OpenReadStream());
@@ -70,23 +73,19 @@ namespace FYP.Controllers
             return result.IsCompletedSuccessfully;
         }
 
-        public Stream DownloadFile(string UserId, string FileName) {
-            CloudFileShare FileShare = GetFileShare(UserId);
+        public async Task<Stream> DownloadFileAsync(string AdminId, string FileName) {
+            CloudFileShare FileShare = GetFileShare(AdminId);
             Stream stream = null;
 
             CloudFile File = FileShare.GetRootDirectoryReference().GetFileReference(FileName);
-            Task result = File.DownloadToStreamAsync(stream);
-            if (result.IsCompletedSuccessfully)
-            {
-                return stream;
-            }
-            else {
-                return null;
-            }  
+            await File.DownloadToStreamAsync(stream);
+
+            return stream;
+ 
         }
 
-        public Boolean DeleteFile(string UserId, string FileName) {
-            CloudFileShare FileShare = GetFileShare(UserId);
+        public Boolean DeleteFile(string AdminId, string FileName) {
+            CloudFileShare FileShare = GetFileShare(AdminId);
             CloudFile File = FileShare.GetRootDirectoryReference().GetFileReference(FileName);
             var result = File.DeleteIfExistsAsync();
             result.Wait();
@@ -94,12 +93,28 @@ namespace FYP.Controllers
             return result.IsCompletedSuccessfully;
         }
 
-        public CloudFile GetSpecificFile(string UserId, string FileName) {
-            CloudFileShare FileShare = GetFileShare(UserId);
+        public CloudFile GetSpecificFile(string AdminId, string FileName) {
+            CloudFileShare FileShare = GetFileShare(AdminId);
             CloudFile File = FileShare.GetRootDirectoryReference().GetFileReference(FileName);
             File.FetchAttributesAsync().Wait();
 
             return File;
         }
+
+        public List<RetrievedFileViewModel> GetFileListBasedOnUser(string AdminId, List<string> FileList)
+        {
+            CloudFileShare FileShare = GetFileShare(AdminId);
+            List<RetrievedFileViewModel> ModelList = new List<RetrievedFileViewModel>();
+
+            foreach (var item in FileList)
+            {
+                RetrievedFileViewModel Model = new RetrievedFileViewModel();
+                Model.RetrievedFile = GetSpecificFile(AdminId, item);
+                ModelList.Add(Model);
+            }
+
+            return ModelList;
+        }
+
     }
 }

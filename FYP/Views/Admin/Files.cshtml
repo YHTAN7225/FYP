@@ -1,19 +1,23 @@
 ﻿@model IEnumerable<RetrievedFileViewModel>
 
 @{
-    ViewData["Title"] = "Files";
+    ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var AuthorizeReturnMessage = TempData["AuthorizeReturnMessage"];
 }
 
-<h1>Files</h1>
+<h1>Index</h1>
 <h5>Belows are all the files available for this account:</h5>
 
+<p>
+    <a asp-action="Upload">Upload new files</a>
+</p>
 <table class="table">
     <thead>
         <tr>
             <th>File Name</th>
             <th>Last Modified</th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -23,9 +27,20 @@
                 <td>@item.RetrievedFile.Name</td>
                 <td>@item.RetrievedFile.Properties.LastModified.GetValueOrDefault().ToLocalTime().DateTime</td>
                 <td>
-                    @Html.ActionLink("Download", "Download", new { FileName = item.RetrievedFile.Name})
+                    @Html.ActionLink("Authorize", "Authorize", new { FileName = item.RetrievedFile.Name }) |
+                    @Html.ActionLink("Delete", "Delete", new { FileName = item.RetrievedFile.Name })
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@if (AuthorizeReturnMessage != null)
+{
+<script type="text/javascript">
+            window.onload = function () {
+                alert("@AuthorizeReturnMessage");
+            };
+</script>
+}
+
