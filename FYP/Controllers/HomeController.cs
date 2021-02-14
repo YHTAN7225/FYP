@@ -53,7 +53,15 @@ namespace FYP.Controllers
 
         public IActionResult FileSubmissionViaLinkView(string LinkId) 
         {
-            LinkStatus LinkStatus = _context.LinkStatus.Where(x => x.LinkId.Equals(LinkId)).First();
+            LinkStatus LinkStatus = null;
+
+            try
+            {
+                LinkStatus = _context.LinkStatus.Where(x => x.LinkId.Equals(LinkId)).First();
+            }
+            catch (Exception e){
+                return NotFound();
+            }
 
             if (LinkStatus.IsValid())
             {

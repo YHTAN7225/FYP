@@ -23,9 +23,19 @@
                 <td>@item.RetrievedFile.Name</td>
                 <td>@item.RetrievedFile.Properties.LastModified.GetValueOrDefault().ToLocalTime().DateTime</td>
                 <td>
-                    @Html.ActionLink("Download", "Download", new { FileName = item.RetrievedFile.Name})
+                    @Html.ActionLink("Share", "Share", new { FileName = item.RetrievedFile.Name }) |
+                    @Html.ActionLink("Download", "Download", new { FileName = item.RetrievedFile.Name })
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@if (TempData["ShareActionReturnMessage"] != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@TempData["ShareActionReturnMessage"]");
+            };
+    </script>
+}

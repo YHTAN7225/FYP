@@ -28,5 +28,6 @@ namespace FYP.Data
         public DbSet<UserAccess> UserAccess { get; set; }
         public DbSet<LinkStatus> LinkStatus { get; set; }
         public DbSet<Notification> Notification { get; set; }
+        public DbSet<ApprovalRequest> ApprovalRequest { get; set; }
     }
 }

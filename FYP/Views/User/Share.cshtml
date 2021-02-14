@@ -1,0 +1,42 @@
+﻿@model IEnumerable<FYP.Models.UserInfo>
+
+@{
+    ViewData["Title"] = "Share";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Authorize</h1>
+<h5>Select a user to request admin to authorize file access to slected user.</h5>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                User ID
+            </th>
+            <th>
+                User Name
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserAccess.UserId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    <form asp-action="ShareAction" asp-route-UserId=@item.UserAccess.UserId asp-route-AdminId=@item.UserAccess.AdminId asp-route-FileId=@TempData["FileId"] asp-route-ReceiverId=@item.UserAccess.UserId>
+                        <input type="submit" value="Request Authorization" class="btn btn-danger" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

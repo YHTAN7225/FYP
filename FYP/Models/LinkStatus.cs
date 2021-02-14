@@ -22,7 +22,7 @@ namespace FYP.Models
             DateTime CurrentTime = DateTime.Now;
             TimeSpan TimeSpan = CurrentTime - this.GeneratedTime;
 
-            if (TimeSpan.Minutes <= 1440)
+            if (TimeSpan.Minutes <= 1440) //valid for 24 hours
             {
                 if (this.Submitted == "false")
                 {
