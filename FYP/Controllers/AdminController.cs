@@ -34,7 +34,135 @@ namespace FYP.Controllers
 
         public IActionResult Approve()
         {
-            return View();
+            List<ApprovalRequest> ApprovalRequestList = _context.ApprovalRequest.Where(x => x.AdminId.Equals(_userManager.GetUserId(User))).ToList();
+            List<RequestInfo> RequestInfoList = new List<RequestInfo>();
+
+            foreach (var item in ApprovalRequestList) { 
+                RequestInfoList.Add(new RequestInfo {
+                    ApproveId = item.ApproveId,
+                    TimeStamp = item.TimeStamp,
+                    SenderUserId = item.SenderUserId,
+                    ReceiverUserId = item.ReceiverUserId,
+                    FileId = item.FileId,
+                    SenderUserName = _context.Users.Where(x => x.Id.Equals(item.SenderUserId)).First().UserName,
+                    ReceiverUserName = _context.Users.Where(x => x.Id.Equals(item.ReceiverUserId)).First().UserName,
+                    FileName = _security.Decrypt(item.FileId)
+                }); 
+            }
+            return View(RequestInfoList);
+        }
+
+        public IActionResult ApproveRequest(string ApproveId) 
+        {
+            ApprovalRequest ApprovalRequest = _context.ApprovalRequest.Where(x => x.ApproveId.Equals(ApproveId)).First();
+            UserAccess UserAccess = _context.UserAccess.Where(x => x.UserId.Equals(ApprovalRequest.ReceiverUserId)).First();
+            UserAccess.AddFileList(ApprovalRequest.FileId);
+            var ApproveResult = _context.SaveChangesAsync();
+            ApproveResult.Wait();
+
+            if (ApproveResult.IsCompletedSuccessfully) {
+                TempData["ApproveRequestReturnMessage"] = "The request has been approved!";
+                _context.ApprovalRequest.Remove(ApprovalRequest);
+                var RemoveResult = _context.SaveChangesAsync();
+                if (!RemoveResult.IsCompletedSuccessfully) {
+                    TempData["ApproveRequestReturnMessage"] = "The request has been approved, but database is not updated!";
+                }
+            }
+            else {
+                TempData["ApproveRequestReturnMessage"] = "Error when approving request!";
+            }
+
+            return RedirectToAction("Approve", "Admin");
+        }
+
+        public IActionResult RejectRequest(string ApproveId)
+        {
+            ApprovalRequest ApprovalRequest = _context.ApprovalRequest.Where(x => x.ApproveId.Equals(ApproveId)).First();
+            _context.ApprovalRequest.Remove(ApprovalRequest);
+            var result = _context.SaveChangesAsync();
+            result.Wait();
+            if (result.IsCompletedSuccessfully) {
+                TempData["RejectRequestReturnMessage"] = "Request has been rejected successfully!";
+            }
+            else {
+                TempData["RejectRequestReturnMessage"] = "Error when rejecting request!";
+            }
+
+            return RedirectToAction("Approve", "Admin");
+        }
+
+        public IActionResult ApproveAllRequest(List<string> ApproveIdList)
+        {
+            bool AllSuccess = true;
+            List<string> ErrorId = new List<string>();
+            List<ApprovalRequest> ApprovalRequestList = new List<ApprovalRequest>();
+            foreach (var item in ApproveIdList) {
+                ApprovalRequestList.Add(_context.ApprovalRequest.Where(x => x.ApproveId.Equals(item)).First()); 
+            }
+
+            foreach (var item in ApprovalRequestList) {
+                UserAccess UserAccess = _context.UserAccess.Where(x => x.UserId.Equals(item.ReceiverUserId)).First();
+                UserAccess.AddFileList(item.FileId);
+                var ApproveResult = _context.SaveChangesAsync();
+                ApproveResult.Wait();
+                if (ApproveResult.IsCompletedSuccessfully) {
+                    AllSuccess = ApproveResult.IsCompletedSuccessfully;
+                    _context.ApprovalRequest.Remove(item);
+                    var RemoveResult = _context.SaveChangesAsync();
+                    RemoveResult.Wait();
+                    if (!RemoveResult.IsCompletedSuccessfully)
+                    {
+                        AllSuccess = RemoveResult.IsCompletedSuccessfully;
+                        ErrorId.Add(item.ApproveId);
+                    }
+                }
+                else {
+                    AllSuccess = ApproveResult.IsCompletedSuccessfully;
+                    ErrorId.Add(item.ApproveId);
+                }
+            }
+
+            if (AllSuccess)
+            {
+                TempData["ApproveAllRequestReturnMessage"] = "All requests has been approved successfully!";
+            }
+            else {
+                TempData["ApproveAllRequestReturnMessage"] = "Error when approving some request, please check recent activities!";
+            }
+
+            return RedirectToAction("Approve", "Admin");
+        }
+
+        public IActionResult RejectAllRequest(List<string> ApproveIdList)
+        {
+            bool AllSuccess = true;
+            List<string> ErrorId = new List<string>();
+            List<ApprovalRequest> ApprovalRequestList = new List<ApprovalRequest>();
+            foreach (var item in ApproveIdList)
+            {
+                ApprovalRequestList.Add(_context.ApprovalRequest.Where(x => x.ApproveId.Equals(item)).First());
+            }
+
+            foreach (var item in ApprovalRequestList) {
+                _context.ApprovalRequest.Remove(item);
+                var result = _context.SaveChangesAsync();
+                result.Wait();
+                if(!result.IsCompletedSuccessfully) {
+                    AllSuccess = result.IsCompletedSuccessfully;
+                    ErrorId.Add(item.ApproveId);
+                }
+            }
+
+            if (AllSuccess)
+            {
+                TempData["RejectAllRequestReturnMessage"] = "All requests has been rejected successfully!";
+            }
+            else
+            {
+                TempData["RejectAllRequestReturnMessage"] = "Error when rejecting some request, please check recent activities!";
+            }
+
+            return RedirectToAction("Approve", "Admin");
         }
 
         public IActionResult Files()

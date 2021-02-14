@@ -1,6 +1,68 @@
-﻿@model IEnumerable<FYP.Models.ApprovalRequest>
+﻿@model IEnumerable<FYP.Models.RequestInfo>
 
 @{
     ViewData["Title"] = "Approve";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    List<string> ApproveIdList = new List<string>();
+
+    foreach (var item in Model) {
+        ApproveIdList.Add(item.ApproveId);
+    }
 }
+
+<h1>Approve</h1>
+<h5>Below are the request from users.</h5>
+
+<form asp-action="ApproveAllRequest" asp-route-ApproveIdList=@ApproveIdList class="d-inline-block float-right p-2">
+    <input type="submit" value="Approve All Request" class="btn btn-primary"/>
+</form>
+<form asp-action="RejectAllRequest" asp-route-ApproveIdList=@ApproveIdList class="d-inline-block float-right p-2">
+    <input type="submit" value="Reject All Request" class="btn btn-secondary" />
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Time of Request
+            </th>
+            <th>
+                Sender
+            </th>
+            <th>
+                Receiver
+            </th>
+            <th>
+                File Name
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @item.TimeStamp
+            </td>
+            <td>
+                @item.SenderUserName
+            </td>
+            <td>
+                @item.ReceiverUserName
+            </td>
+            <td>
+                @item.FileName
+            </td>
+            <td>
+                <form asp-action="ApproveRequest" asp-route-ApproveIdList=@item.ApproveId class="d-inline-block">
+                    <input type="submit" value="Approve" class="btn btn-primary" />
+                </form>
+                <form asp-action="RejectRequest" asp-route-ApproveIdList=@item.ApproveId class="d-inline-block">
+                    <input type="submit" value="Reject" class="btn btn-secondary" />
+                </form>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

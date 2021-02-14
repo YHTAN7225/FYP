@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<FYP.Models.UserInfo>
+@inject UserManager<IdentityUser> UserManager
 
 @{
     ViewData["Title"] = "Share";
@@ -31,7 +32,7 @@
                     @Html.DisplayFor(modelItem => item.UserName)
                 </td>
                 <td>
-                    <form asp-action="ShareAction" asp-route-UserId=@item.UserAccess.UserId asp-route-AdminId=@item.UserAccess.AdminId asp-route-FileId=@TempData["FileId"] asp-route-ReceiverId=@item.UserAccess.UserId>
+                    <form asp-action="ShareAction" asp-route-UserId=@UserManager.GetUserId(User) asp-route-AdminId=@item.UserAccess.AdminId asp-route-FileId=@TempData["FileId"] asp-route-ReceiverId=@item.UserAccess.UserId>
                         <input type="submit" value="Request Authorization" class="btn btn-danger" />
                     </form>
                 </td>
