@@ -25,33 +25,35 @@ namespace FYP.Models
         }
 
         public void AddFileList(string fileId) {
-            Security security = new Security();
-            List<string> list = FileList.Split("|").ToList();
-
-            foreach (var item in list)
+            if ((this.FileList != null) && (this.FileList != ""))
             {
-                if (fileId != security.Decrypt(item))
+                if (!this.FileList.Contains(fileId))
                 {
-                    if (this.FileList == null)
-                    {
-                        this.FileList = item;
-                    }
-                    else
-                    {
-                        this.FileList = this.FileList + "|" + item;
-                    }
+                        this.FileList = this.FileList + "|" + fileId;
                 }
+                else
+                {
+                    List<string> list = FileList.Split("|").ToList();
+                    list.Remove(fileId);
 
-            }
-
-            if (this.FileList == null)
-            {
-                this.FileList = fileId;
+                    string newList = "";
+                    foreach (var item in list)
+                    {
+                        if (newList == "")
+                        {
+                            newList = item;
+                        }
+                        else
+                        {
+                            newList = newList + "|" + item;
+                        }
+                    }
+                    this.FileList = newList + "|" + fileId;
+                }
             }
             else {
-                this.FileList = this.FileList + "|" + fileId;            
+                this.FileList = fileId;
             }
         }
-
     }
 }

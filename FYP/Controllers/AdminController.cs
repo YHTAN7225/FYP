@@ -91,8 +91,11 @@ namespace FYP.Controllers
             return RedirectToAction("Approve", "Admin");
         }
 
-        public IActionResult ApproveAllRequest(List<string> ApproveIdList)
+        [HttpPost]
+        public IActionResult ApproveAllRequest(string IdList)
         {
+            List<string> ApproveIdList = IdList.Split("|").ToList();
+
             bool AllSuccess = true;
             List<string> ErrorId = new List<string>();
             List<ApprovalRequest> ApprovalRequestList = new List<ApprovalRequest>();
@@ -133,8 +136,10 @@ namespace FYP.Controllers
             return RedirectToAction("Approve", "Admin");
         }
 
-        public IActionResult RejectAllRequest(List<string> ApproveIdList)
+        public IActionResult RejectAllRequest(string IdList)
         {
+            List<string> ApproveIdList = IdList.Split("|").ToList();
+
             bool AllSuccess = true;
             List<string> ErrorId = new List<string>();
             List<ApprovalRequest> ApprovalRequestList = new List<ApprovalRequest>();
@@ -383,7 +388,7 @@ namespace FYP.Controllers
                 if (FileList.Contains(_security.Encrypt(FileName)))
                 {
                     TempData["AuthorizeReturnMessage"] = "Selected user already have access to this file!";
-                    return RedirectToAction("Index", "Admin");
+                    return RedirectToAction("Files", "Admin");
                 }
                 else {
                     UserAccess.FileList = UserAccess.FileList + "|" + _security.Encrypt(FileName);
@@ -400,7 +405,7 @@ namespace FYP.Controllers
             else {
                 TempData["AuthorizeReturnMessage"] = "Error when authorizing!";
             }
-            return RedirectToAction("Index", "Admin");
+            return RedirectToAction("Files", "Admin");
         }
 
     }
