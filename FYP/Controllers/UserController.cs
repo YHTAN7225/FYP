@@ -40,11 +40,11 @@ namespace FYP.Controllers
             var user = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First();
 
             foreach (var item in NotificationList) {
-                if ((item.PrimaryUserId == user.UserName) || (item.SecondaryUserId == user.UserName)) 
+                if ((item.PrimaryUserName == user.UserName) || (item.SecondaryUserName == user.UserName)) 
                 {
                     var act = new Activities
                     {
-                        Activity = _constant.UserGetMessage(item.ActionName, item.PrimaryUserId, item.SecondaryUserId, item.FileId),
+                        Activity = _constant.UserGetMessage(item.ActionName, item.PrimaryUserName, item.SecondaryUserName, item.FileName),
                         TimeStamp = item.TimeStamp
                     };
                     if (act.Activity != "")
@@ -145,9 +145,9 @@ namespace FYP.Controllers
                 Notification notif = new Notification
                 {
                     ActionName = "REQUEST",
-                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
-                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(ReceiverId)).First().UserName,
-                    FileId = _security.Decrypt(FileId)
+                    PrimaryUserName = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                    SecondaryUserName = _context.Users.Where(x => x.Id.Equals(ReceiverId)).First().UserName,
+                    FileName = _security.Decrypt(FileId)
                 };
                 _context.Notification.Add(notif);
                 _context.SaveChangesAsync().Wait();

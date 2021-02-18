@@ -13,11 +13,11 @@ namespace FYP.Models
 
         public string ActionName { get; set; }
 
-        public string PrimaryUserId { get; set; }
+        public string PrimaryUserName { get; set; }
 
-        public string SecondaryUserId { get; set; }
+        public string SecondaryUserName { get; set; }
 
-        public string FileId { get; set; }
+        public string FileName { get; set; }
 
         public DateTime TimeStamp { get; set; }
 

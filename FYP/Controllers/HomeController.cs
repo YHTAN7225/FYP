@@ -89,9 +89,9 @@ namespace FYP.Controllers
                 Notification notif = new Notification
                 {
                     ActionName = "LINK_UPLOAD",
-                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(UserId)).First().UserName,
-                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(_context.UserAccess.Where(x => x.UserId.Equals(UserId)).First().AdminId)).First().UserName,
-                    FileId = item.FileName
+                    PrimaryUserName = _context.Users.Where(x => x.Id.Equals(UserId)).First().UserName,
+                    SecondaryUserName = _context.Users.Where(x => x.Id.Equals(_context.UserAccess.Where(x => x.UserId.Equals(UserId)).First().AdminId)).First().UserName,
+                    FileName = item.FileName
                 };
                 _context.Notification.Add(notif);
                 _context.SaveChangesAsync().Wait();

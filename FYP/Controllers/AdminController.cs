@@ -38,11 +38,11 @@ namespace FYP.Controllers
 
             foreach (var item in NotificationList)
             {
-                if ((item.PrimaryUserId == user.UserName) || (item.SecondaryUserId == user.UserName))
+                if ((item.PrimaryUserName == user.UserName) || (item.SecondaryUserName == user.UserName))
                 {
                     var act = new Activities
                     {
-                        Activity = _constant.AdminGetMessage(item.ActionName, item.PrimaryUserId, item.SecondaryUserId, item.FileId),
+                        Activity = _constant.AdminGetMessage(item.ActionName, item.PrimaryUserName, item.SecondaryUserName, item.FileName),
                         TimeStamp = item.TimeStamp
                     };
                     if (act.Activity != "") {
@@ -93,18 +93,18 @@ namespace FYP.Controllers
                 Notification notif = new Notification
                 {
                     ActionName = "APPROVED",
-                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.SenderUserId)).First().UserName,
-                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.ReceiverUserId)).First().UserName,
-                    FileId = _security.Decrypt(ApprovalRequest.FileId)
+                    PrimaryUserName = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.SenderUserId)).First().UserName,
+                    SecondaryUserName = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.ReceiverUserId)).First().UserName,
+                    FileName = _security.Decrypt(ApprovalRequest.FileId)
                 };
                 _context.Notification.Add(notif);
 
                 Notification notif2 = new Notification
                 {
                     ActionName = "APPROVED",
-                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
-                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.SenderUserId)).First().UserName,
-                    FileId = _security.Decrypt(ApprovalRequest.FileId)
+                    PrimaryUserName = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                    SecondaryUserName = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.SenderUserId)).First().UserName,
+                    FileName = _security.Decrypt(ApprovalRequest.FileId)
                 };
                 _context.Notification.Add(notif2);
                 _context.SaveChangesAsync().Wait();
@@ -128,18 +128,18 @@ namespace FYP.Controllers
                 Notification notif = new Notification
                 {
                     ActionName = "REJECTED",
-                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.SenderUserId)).First().UserName,
-                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.ReceiverUserId)).First().UserName,
-                    FileId = _security.Decrypt(ApprovalRequest.FileId)
+                    PrimaryUserName = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.SenderUserId)).First().UserName,
+                    SecondaryUserName = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.ReceiverUserId)).First().UserName,
+                    FileName = _security.Decrypt(ApprovalRequest.FileId)
                 };
                 _context.Notification.Add(notif);
 
                 Notification notif2 = new Notification
                 {
                     ActionName = "REJECTED",
-                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
-                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.SenderUserId)).First().UserName,
-                    FileId = _security.Decrypt(ApprovalRequest.FileId)
+                    PrimaryUserName = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                    SecondaryUserName = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.SenderUserId)).First().UserName,
+                    FileName = _security.Decrypt(ApprovalRequest.FileId)
                 };
                 _context.Notification.Add(notif2);
                 _context.SaveChangesAsync().Wait();
@@ -182,18 +182,18 @@ namespace FYP.Controllers
                     Notification notif = new Notification
                     {
                         ActionName = "APPROVED",
-                        PrimaryUserId = _context.Users.Where(x => x.Id.Equals(item.SenderUserId)).First().UserName,
-                        SecondaryUserId = _context.Users.Where(x => x.Id.Equals(item.ReceiverUserId)).First().UserName,
-                        FileId = _security.Decrypt(item.FileId)
+                        PrimaryUserName = _context.Users.Where(x => x.Id.Equals(item.SenderUserId)).First().UserName,
+                        SecondaryUserName = _context.Users.Where(x => x.Id.Equals(item.ReceiverUserId)).First().UserName,
+                        FileName = _security.Decrypt(item.FileId)
                     };
                     _context.Notification.Add(notif);
 
                     Notification notif2 = new Notification
                     {
                         ActionName = "APPROVED",
-                        PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
-                        SecondaryUserId = _context.Users.Where(x => x.Id.Equals(item.SenderUserId)).First().UserName,
-                        FileId = _security.Decrypt(item.FileId)
+                        PrimaryUserName = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                        SecondaryUserName = _context.Users.Where(x => x.Id.Equals(item.SenderUserId)).First().UserName,
+                        FileName = _security.Decrypt(item.FileId)
                     };
                     _context.Notification.Add(notif2);
                     _context.SaveChangesAsync().Wait();
@@ -235,18 +235,18 @@ namespace FYP.Controllers
                 Notification notif = new Notification
                 {
                     ActionName = "REJECTED",
-                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(item.SenderUserId)).First().UserName,
-                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(item.ReceiverUserId)).First().UserName,
-                    FileId = _security.Decrypt(item.FileId)
+                    PrimaryUserName = _context.Users.Where(x => x.Id.Equals(item.SenderUserId)).First().UserName,
+                    SecondaryUserName = _context.Users.Where(x => x.Id.Equals(item.ReceiverUserId)).First().UserName,
+                    FileName = _security.Decrypt(item.FileId)
                 };
                 _context.Notification.Add(notif);
 
                 Notification notif2 = new Notification
                 {
                     ActionName = "REJECTED",
-                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
-                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(item.SenderUserId)).First().UserName,
-                    FileId = _security.Decrypt(item.FileId)
+                    PrimaryUserName = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                    SecondaryUserName = _context.Users.Where(x => x.Id.Equals(item.SenderUserId)).First().UserName,
+                    FileName = _security.Decrypt(item.FileId)
                 };
                 _context.Notification.Add(notif2);
                 _context.SaveChangesAsync().Wait();
@@ -323,9 +323,9 @@ namespace FYP.Controllers
                 Notification notif = new Notification
                 {
                     ActionName = "DELETE_USER",
-                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
-                    SecondaryUserId = UserToBeDelete.UserName,
-                    FileId = ""
+                    PrimaryUserName = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                    SecondaryUserName = UserToBeDelete.UserName,
+                    FileName = ""
                 };
                 _context.Notification.Add(notif);
                 _context.SaveChangesAsync().Wait();
@@ -365,9 +365,9 @@ namespace FYP.Controllers
                         Notification notif = new Notification
                         {
                             ActionName = "ADD_USER",
-                            PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
-                            SecondaryUserId = "",
-                            FileId = item.FileName
+                            PrimaryUserName = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                            SecondaryUserName = "",
+                            FileName = item.FileName
                         };
                         _context.Notification.Add(notif);
                         _context.SaveChangesAsync().Wait();
@@ -424,9 +424,9 @@ namespace FYP.Controllers
                     Notification notif = new Notification
                     {
                         ActionName = "CREATE_USER",
-                        PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
-                        SecondaryUserId = newUser.UserName,
-                        FileId = ""
+                        PrimaryUserName = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                        SecondaryUserName = newUser.UserName,
+                        FileName = ""
                     };
                     _context.Notification.Add(notif);
                     _context.SaveChangesAsync().Wait();
@@ -483,9 +483,9 @@ namespace FYP.Controllers
                     Notification notif = new Notification
                     {
                         ActionName = "DELETE_FILE",
-                        PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
-                        SecondaryUserId = "",
-                        FileId = FileName
+                        PrimaryUserName = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                        SecondaryUserName = "",
+                        FileName = FileName
                     };
                     _context.Notification.Add(notif);
                     _context.SaveChangesAsync().Wait();
@@ -552,9 +552,9 @@ namespace FYP.Controllers
                 Notification notif = new Notification
                 {
                     ActionName = "SHARE",
-                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
-                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(UserId)).First().UserName,
-                    FileId = FileName
+                    PrimaryUserName = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                    SecondaryUserName = _context.Users.Where(x => x.Id.Equals(UserId)).First().UserName,
+                    FileName = FileName
                 };
                 _context.Notification.Add(notif);
                 _context.SaveChangesAsync().Wait();
