@@ -49,3 +49,12 @@
             };
     </script>
 }
+
+@if (TempData["CreateUserReturnMessage"] != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@TempData["CreateUserReturnMessage"]");
+            };
+    </script>
+}

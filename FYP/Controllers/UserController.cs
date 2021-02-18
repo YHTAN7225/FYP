@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FYP.Controllers
 {
+    [Authorize(Roles = "user")]
     public class UserController : Controller
     {
         private readonly FYPContext _context;
@@ -34,7 +35,26 @@ namespace FYP.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            List<Activities> ActivitiesList = new List<Activities>();
+            List<Notification> NotificationList = _context.Notification.ToList();
+            var user = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First();
+
+            foreach (var item in NotificationList) {
+                if ((item.PrimaryUserId == user.UserName) || (item.SecondaryUserId == user.UserName)) 
+                {
+                    var act = new Activities
+                    {
+                        Activity = _constant.UserGetMessage(item.ActionName, item.PrimaryUserId, item.SecondaryUserId, item.FileId),
+                        TimeStamp = item.TimeStamp
+                    };
+                    if (act.Activity != "")
+                    {
+                        ActivitiesList.Add(act);
+                    }
+                }
+            }
+            ActivitiesList.Reverse();
+            return View(ActivitiesList);
         }
 
         public IActionResult GenerateLink()
@@ -122,6 +142,16 @@ namespace FYP.Controllers
             var result = _context.SaveChangesAsync();
             result.Wait();
             if (result.IsCompletedSuccessfully) {
+                Notification notif = new Notification
+                {
+                    ActionName = "REQUEST",
+                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(ReceiverId)).First().UserName,
+                    FileId = _security.Decrypt(FileId)
+                };
+                _context.Notification.Add(notif);
+                _context.SaveChangesAsync().Wait();
+
                 TempData["ShareActionReturnMessage"] = "Successfully send request to admin!";
             }
             else {

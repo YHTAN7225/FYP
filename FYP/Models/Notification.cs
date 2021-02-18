@@ -13,18 +13,17 @@ namespace FYP.Models
 
         public string ActionName { get; set; }
 
-        public string SenderUserId { get; set; }
+        public string PrimaryUserId { get; set; }
 
-        public string ReceiverUserId { get; set; }
+        public string SecondaryUserId { get; set; }
+
+        public string FileId { get; set; }
 
         public DateTime TimeStamp { get; set; }
 
-        public Notification(string ActionName, string SenderUserId, string ReceiverUserId) {
+        public Notification() {
             this.NotificationId = Guid.NewGuid().ToString();
             this.TimeStamp = DateTime.Now;
-            this.ActionName = ActionName;
-            this.SenderUserId = SenderUserId;
-            this.ReceiverUserId = ReceiverUserId;
         }
 
     }

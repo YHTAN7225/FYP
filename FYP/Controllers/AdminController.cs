@@ -13,12 +13,14 @@ using Microsoft.WindowsAzure.Storage.File;
 
 namespace FYP.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class AdminController : Controller
     {
         private readonly FYPContext _context;
         private UserManager<IdentityUser> _userManager;
         private Storage _storage;
         private Security _security;
+        private Constant _constant;
 
         public AdminController(FYPContext context, UserManager<IdentityUser> userManager)
         {
@@ -26,10 +28,30 @@ namespace FYP.Controllers
             this._userManager = userManager;
             this._storage = new Storage();
             this._security = new Security();
+            this._constant = new Constant();
         }
 
         public IActionResult Index() {
-            return View();
+            List<Activities> ActivitiesList = new List<Activities>();
+            List<Notification> NotificationList = _context.Notification.ToList();
+            var user = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First();
+
+            foreach (var item in NotificationList)
+            {
+                if ((item.PrimaryUserId == user.UserName) || (item.SecondaryUserId == user.UserName))
+                {
+                    var act = new Activities
+                    {
+                        Activity = _constant.AdminGetMessage(item.ActionName, item.PrimaryUserId, item.SecondaryUserId, item.FileId),
+                        TimeStamp = item.TimeStamp
+                    };
+                    if (act.Activity != "") {
+                        ActivitiesList.Add(act);
+                    }
+                }
+            }
+            ActivitiesList.Reverse();
+            return View(ActivitiesList);
         }
 
         public IActionResult Approve()
@@ -67,6 +89,25 @@ namespace FYP.Controllers
                 if (!RemoveResult.IsCompletedSuccessfully) {
                     TempData["ApproveRequestReturnMessage"] = "The request has been approved, but database is not updated!";
                 }
+
+                Notification notif = new Notification
+                {
+                    ActionName = "APPROVED",
+                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.SenderUserId)).First().UserName,
+                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.ReceiverUserId)).First().UserName,
+                    FileId = _security.Decrypt(ApprovalRequest.FileId)
+                };
+                _context.Notification.Add(notif);
+
+                Notification notif2 = new Notification
+                {
+                    ActionName = "APPROVED",
+                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.SenderUserId)).First().UserName,
+                    FileId = _security.Decrypt(ApprovalRequest.FileId)
+                };
+                _context.Notification.Add(notif2);
+                _context.SaveChangesAsync().Wait();
             }
             else {
                 TempData["ApproveRequestReturnMessage"] = "Error when approving request!";
@@ -83,6 +124,25 @@ namespace FYP.Controllers
             result.Wait();
             if (result.IsCompletedSuccessfully) {
                 TempData["RejectRequestReturnMessage"] = "Request has been rejected successfully!";
+
+                Notification notif = new Notification
+                {
+                    ActionName = "REJECTED",
+                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.SenderUserId)).First().UserName,
+                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.ReceiverUserId)).First().UserName,
+                    FileId = _security.Decrypt(ApprovalRequest.FileId)
+                };
+                _context.Notification.Add(notif);
+
+                Notification notif2 = new Notification
+                {
+                    ActionName = "REJECTED",
+                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(ApprovalRequest.SenderUserId)).First().UserName,
+                    FileId = _security.Decrypt(ApprovalRequest.FileId)
+                };
+                _context.Notification.Add(notif2);
+                _context.SaveChangesAsync().Wait();
             }
             else {
                 TempData["RejectRequestReturnMessage"] = "Error when rejecting request!";
@@ -118,6 +178,25 @@ namespace FYP.Controllers
                         AllSuccess = RemoveResult.IsCompletedSuccessfully;
                         ErrorId.Add(item.ApproveId);
                     }
+
+                    Notification notif = new Notification
+                    {
+                        ActionName = "APPROVED",
+                        PrimaryUserId = _context.Users.Where(x => x.Id.Equals(item.SenderUserId)).First().UserName,
+                        SecondaryUserId = _context.Users.Where(x => x.Id.Equals(item.ReceiverUserId)).First().UserName,
+                        FileId = _security.Decrypt(item.FileId)
+                    };
+                    _context.Notification.Add(notif);
+
+                    Notification notif2 = new Notification
+                    {
+                        ActionName = "APPROVED",
+                        PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                        SecondaryUserId = _context.Users.Where(x => x.Id.Equals(item.SenderUserId)).First().UserName,
+                        FileId = _security.Decrypt(item.FileId)
+                    };
+                    _context.Notification.Add(notif2);
+                    _context.SaveChangesAsync().Wait();
                 }
                 else {
                     AllSuccess = ApproveResult.IsCompletedSuccessfully;
@@ -152,7 +231,27 @@ namespace FYP.Controllers
                 _context.ApprovalRequest.Remove(item);
                 var result = _context.SaveChangesAsync();
                 result.Wait();
-                if(!result.IsCompletedSuccessfully) {
+
+                Notification notif = new Notification
+                {
+                    ActionName = "REJECTED",
+                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(item.SenderUserId)).First().UserName,
+                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(item.ReceiverUserId)).First().UserName,
+                    FileId = _security.Decrypt(item.FileId)
+                };
+                _context.Notification.Add(notif);
+
+                Notification notif2 = new Notification
+                {
+                    ActionName = "REJECTED",
+                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(item.SenderUserId)).First().UserName,
+                    FileId = _security.Decrypt(item.FileId)
+                };
+                _context.Notification.Add(notif2);
+                _context.SaveChangesAsync().Wait();
+
+                if (!result.IsCompletedSuccessfully) {
                     AllSuccess = result.IsCompletedSuccessfully;
                     ErrorId.Add(item.ApproveId);
                 }
@@ -212,23 +311,30 @@ namespace FYP.Controllers
             UserAccess UserAccessToBeDelete = _context.UserAccess.Where(x => x.UserId.Equals(UserId)).First();
 
             _context.Users.Remove(UserToBeDelete);
-            _context.SaveChangesAsync();
-            _context.UserAccess.Remove(UserAccessToBeDelete);
             var result = _context.SaveChangesAsync();
             result.Wait();
+            _context.UserAccess.Remove(UserAccessToBeDelete);
+            var result2 = _context.SaveChangesAsync();
+            result2.Wait();
 
-            if (result.IsCompletedSuccessfully)
+            if (result2.IsCompletedSuccessfully)
             {
                 TempData["DeleteUserReturnMessage"] = "Successfully deleted this user!";
+                Notification notif = new Notification
+                {
+                    ActionName = "DELETE_USER",
+                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                    SecondaryUserId = UserToBeDelete.UserName,
+                    FileId = ""
+                };
+                _context.Notification.Add(notif);
+                _context.SaveChangesAsync().Wait();
             }
             else {
                 TempData["DeleteUserReturnMessage"] = "Error when deleting this user!";
             }
-            
             return RedirectToAction("ViewUser", "Admin");
         }
-
-
 
         [ActionName("Upload")]
         public ActionResult Upload()
@@ -253,6 +359,18 @@ namespace FYP.Controllers
                     if (!_storage.UploadFile(_userManager.GetUserId(User), item))
                     {
                         ViewBag.ReturnMessage = "Error Uploading File!";
+                    }
+                    else 
+                    {
+                        Notification notif = new Notification
+                        {
+                            ActionName = "ADD_USER",
+                            PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                            SecondaryUserId = "",
+                            FileId = item.FileName
+                        };
+                        _context.Notification.Add(notif);
+                        _context.SaveChangesAsync().Wait();
                     }
                 }
             }
@@ -302,20 +420,35 @@ namespace FYP.Controllers
                     UserAccess ua = new UserAccess(newUser.Id, _userManager.GetUserId(User), ac.OrganizationName);
                     _context.UserAccess.Add(ua);
                     _context.SaveChanges();
-                    ViewBag.CreateUserReturnMessage = "A new user has been created!";
+
+                    Notification notif = new Notification
+                    {
+                        ActionName = "CREATE_USER",
+                        PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                        SecondaryUserId = newUser.UserName,
+                        FileId = ""
+                    };
+                    _context.Notification.Add(notif);
+                    _context.SaveChangesAsync().Wait();
+
+                    TempData["CreateUserReturnMessage"] = "A new user has been created!";
                 }
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-            return View();
+            return RedirectToAction("ViewUser", "Admin");
         }
 
         [ActionName("Delete")]
         public ActionResult Delete(string FileName)
         {
             if (FileName == null)
+            {
+                return BadRequest();
+            } 
+            else if (!_storage.CheckFile(_userManager.GetUserId(User), FileName)) 
             {
                 return BadRequest();
             }
@@ -341,13 +474,29 @@ namespace FYP.Controllers
 
                 if (_storage.DeleteFile(_userManager.GetUserId(User), FileName))
                 {
-                    ViewBag.DeleteFileReturnMessage = "File deleted successfully!";
+                    List<UserAccess> UserAccessList = _context.UserAccess.Where(x => x.AdminId.Equals(_userManager.GetUserId(User))).ToList();
+
+                    foreach (var item in UserAccessList) {
+                        item.DeleteFileAccessList(_security.Encrypt(FileName));
+                    }
+
+                    Notification notif = new Notification
+                    {
+                        ActionName = "DELETE_FILE",
+                        PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                        SecondaryUserId = "",
+                        FileId = FileName
+                    };
+                    _context.Notification.Add(notif);
+                    _context.SaveChangesAsync().Wait();
+
+                    TempData["DeleteFileReturnMessage"] = "File deleted successfully!";
                 }
                 else
                 {
-                    ViewBag.DeleteFileReturnMessage = "Error when deleting file!";
+                    TempData["DeleteFileReturnMessage"] = "Error when deleting file!";
                 }
-                return RedirectToAction("Index", "Admin");
+                return RedirectToAction("Files", "Admin");
             }
 
         }
@@ -400,6 +549,16 @@ namespace FYP.Controllers
 
             if (result.IsCompletedSuccessfully)
             {
+                Notification notif = new Notification
+                {
+                    ActionName = "SHARE",
+                    PrimaryUserId = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                    SecondaryUserId = _context.Users.Where(x => x.Id.Equals(UserId)).First().UserName,
+                    FileId = FileName
+                };
+                _context.Notification.Add(notif);
+                _context.SaveChangesAsync().Wait();
+
                 TempData["AuthorizeReturnMessage"] = "Successfully authorize file to selected user!";
             }
             else {

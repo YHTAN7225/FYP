@@ -55,5 +55,16 @@ namespace FYP.Models
                 this.FileList = fileId;
             }
         }
+
+        public void DeleteFileAccessList(string FileId) {
+            List<string> list = this.FileList.Split("|").ToList();
+            this.FileList = "";
+
+            foreach (var item in list) {
+                if (item != FileId) {
+                    AddFileList(item);
+                }
+            }
+        }
     }
 }

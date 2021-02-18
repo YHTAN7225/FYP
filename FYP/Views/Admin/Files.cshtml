@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var AuthorizeReturnMessage = TempData["AuthorizeReturnMessage"];
 }
 
 <h1>Index</h1>
@@ -35,12 +34,21 @@
     </tbody>
 </table>
 
-@if (AuthorizeReturnMessage != null)
+@if (TempData["AuthorizeReturnMessage"] != null)
 {
-<script type="text/javascript">
+    <script type="text/javascript">
             window.onload = function () {
-                alert("@AuthorizeReturnMessage");
+                alert("@TempData["AuthorizeReturnMessage"]");
             };
-</script>
+    </script>
+}
+
+@if (TempData["DeleteFileReturnMessage"] != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@TempData["DeleteFileReturnMessage"]");
+            };
+    </script>
 }
 

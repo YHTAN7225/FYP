@@ -101,6 +101,16 @@ namespace FYP.Controllers
             return File;
         }
 
+        public Boolean CheckFile(string AdminId, string FileName) {
+            CloudFileShare FileShare = GetFileShare(AdminId);
+            CloudFile File = FileShare.GetRootDirectoryReference().GetFileReference(FileName);
+
+            var result = File.ExistsAsync();
+            result.Wait();
+
+            return result.Result;
+        }
+
         public List<RetrievedFileViewModel> GetFileListBasedOnUser(string AdminId, List<string> FileList)
         {
             CloudFileShare FileShare = GetFileShare(AdminId);

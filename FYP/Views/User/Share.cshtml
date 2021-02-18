@@ -33,7 +33,7 @@
                 </td>
                 <td>
                     <form asp-action="ShareAction" asp-route-UserId=@UserManager.GetUserId(User) asp-route-AdminId=@item.UserAccess.AdminId asp-route-FileId=@TempData["FileId"] asp-route-ReceiverId=@item.UserAccess.UserId>
-                        <input type="submit" value="Request Authorization" class="btn btn-danger" />
+                        <input type="submit" value="Request Authorization" class="btn btn-primary" />
                     </form>
                 </td>
             </tr>

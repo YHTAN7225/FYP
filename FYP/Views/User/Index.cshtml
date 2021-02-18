@@ -1,8 +1,36 @@
-﻿
+﻿@model IEnumerable<Activities>
+
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Home";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Home</h1>
 
+<h5>Recent Activities</h5>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Activities
+            </th>
+            <th>
+                Time
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Activity
+                </td>
+                <td>
+                    @item.TimeStamp
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
