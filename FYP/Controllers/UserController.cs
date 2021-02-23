@@ -98,7 +98,16 @@ namespace FYP.Controllers
                 return BadRequest();
             }
 
-            return View();
+            List<SignatureRequest> SignatureRequestList = _context.SignatureRequest.Where(x => x.SenderUserName.Equals(_context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName)).ToList();
+            SignatureRequestList.AddRange(_context.SignatureRequest.Where(x => x.ReceiverUserName.Equals(_context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName)).ToList());
+
+            return View(SignatureRequestList);
+        }
+
+        public IActionResult SignAction(string SignatureId) {
+            
+
+            return RedirectToAction("Admin", "Sign");
         }
 
         public IActionResult Files()

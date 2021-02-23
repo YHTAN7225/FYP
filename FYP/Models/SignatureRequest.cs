@@ -13,6 +13,7 @@ namespace FYP.Models
         public DateTime TimeStamp{ get; set; }
         public string SenderUserName { get; set; }
         public string ReceiverUserName { get; set; }
+        public string FileName { get; set; }
         public string SignatureStatus { get; set; }
 
         public SignatureRequest() {

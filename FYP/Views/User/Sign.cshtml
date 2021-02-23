@@ -1,4 +1,4 @@
-﻿@*@model IEnumerable<SignatureRequest>
+﻿@model IEnumerable<SignatureRequest>
 
 @{
     ViewData["Title"] = "Sign";
@@ -13,10 +13,10 @@
     <thead>
         <tr>
             <th>
-                User Id
+                Sender 
             </th>
             <th>
-                User Email
+                File Name
             </th>
             <th></th>
         </tr>
@@ -26,15 +26,15 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.UserAccess.UserId)
+                    @item.SenderUserName
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.UserName)
+                    @item.FileName
                 </td>
                 <td>
-                    @Html.ActionLink("Delete User", "DeleteUser", new { UserId = item.UserAccess.UserId })
+                    
                 </td>
             </tr>
         }
     </tbody>
-</table>*@
+</table>
