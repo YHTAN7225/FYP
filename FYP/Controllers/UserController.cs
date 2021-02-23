@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FYP.Controllers
 {
-    [Authorize(Roles = "user")]
     public class UserController : Controller
     {
         private readonly FYPContext _context;
@@ -33,8 +32,24 @@ namespace FYP.Controllers
             this._constant = new Constant();
         }
 
+        private Boolean UserRoleCheck()
+        {
+            if (User.IsInRole("user"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public IActionResult Index()
         {
+            if (!UserRoleCheck()) {
+                return BadRequest();
+            }
+
             List<Activities> ActivitiesList = new List<Activities>();
             List<Notification> NotificationList = _context.Notification.ToList();
             var user = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First();
@@ -59,6 +74,11 @@ namespace FYP.Controllers
 
         public IActionResult GenerateLink()
         {
+            if (!UserRoleCheck())
+            {
+                return BadRequest();
+            }
+
             return View();
         }
 
@@ -73,11 +93,21 @@ namespace FYP.Controllers
 
         public IActionResult Sign()
         {
+            if (!UserRoleCheck())
+            {
+                return BadRequest();
+            }
+
             return View();
         }
 
         public IActionResult Files()
         {
+            if (!UserRoleCheck())
+            {
+                return BadRequest();
+            }
+
             UserAccess ua = _context.UserAccess.Where(x => x.UserId.Equals(_userManager.GetUserId(User))).First();
             List<string> FileList = new List<string>();
 
@@ -94,6 +124,11 @@ namespace FYP.Controllers
         [HttpGet]
         public IActionResult Download(string FileName)
         {
+            if (!UserRoleCheck())
+            {
+                return BadRequest();
+            }
+
             UserAccess ua = _context.UserAccess.Where(x => x.UserId.Equals(_userManager.GetUserId(User))).First();
             var file = _storage.GetSpecificFile(ua.AdminId, FileName);
 
@@ -103,6 +138,11 @@ namespace FYP.Controllers
 
         public IActionResult Share(string FileName)
         {
+            if (!UserRoleCheck())
+            {
+                return BadRequest();
+            }
+
             if (FileName == null) {
                 return BadRequest();
             }
@@ -125,6 +165,11 @@ namespace FYP.Controllers
         }
 
         public IActionResult ShareAction(string UserId, string AdminId, string FileId, string ReceiverId) {
+            if (!UserRoleCheck())
+            {
+                return BadRequest();
+            }
+
             ApprovalRequest NewApprovalRequest =  new ApprovalRequest(UserId, ReceiverId, AdminId, FileId);
             List<ApprovalRequest> ApprovalRequestsList = _context.ApprovalRequest.ToList();
 
@@ -158,11 +203,6 @@ namespace FYP.Controllers
                 TempData["ShareActionReturnMessage"] = "Error when sending request!";
             }
             return RedirectToAction("Files", "User");
-        }
-
-        public IActionResult RequestFile()
-        {
-            return View();
         }
     }
 }

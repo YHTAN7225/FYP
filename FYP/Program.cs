@@ -6,13 +6,17 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using FYP.Controllers;
 
 namespace FYP
 {
     public class Program
     {
+        private static readonly StartUp startUp;
+
         public static void Main(string[] args)
         {
+            startUp.ClearExpiredLink();
             CreateHostBuilder(args).Build().Run();
         }
 

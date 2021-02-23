@@ -11,8 +11,7 @@ namespace FYP.Data
 {
     public class FYPContext : IdentityDbContext<IdentityUser>
     {
-        public FYPContext(DbContextOptions<FYPContext> options)
-            : base(options)
+        public FYPContext(DbContextOptions<FYPContext> options) : base(options)
         {
         }
 
@@ -29,5 +28,6 @@ namespace FYP.Data
         public DbSet<LinkStatus> LinkStatus { get; set; }
         public DbSet<Notification> Notification { get; set; }
         public DbSet<ApprovalRequest> ApprovalRequest { get; set; }
+        public DbSet<SignatureRequest> SignatureRequest { get; set; }
     }
 }

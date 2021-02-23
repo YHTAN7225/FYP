@@ -13,6 +13,7 @@ namespace FYP.Migrations
     [Migration("20210124073611_NewSchema")]
     partial class NewSchema
     {
+        override
         protected void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

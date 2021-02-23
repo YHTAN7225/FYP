@@ -85,7 +85,7 @@ namespace FYP.Areas.Identity.Pages.Account
                     var userWithMatchEmail = await _userManager.FindByEmailAsync(Input.Email);
                     var userCurrentRole = _userManager.GetRolesAsync(userWithMatchEmail);
                     _logger.LogInformation("User logged in.");
-                    if (userCurrentRole.Result.Contains("Admin"))
+                    if (userCurrentRole.Result.Contains("admin"))
                     {
                         return LocalRedirect("~/Admin/Index");
                     }

@@ -12,6 +12,8 @@ using Microsoft.Extensions.Azure;
 using Azure.Storage.Queues;
 using Azure.Storage.Blobs;
 using Azure.Core.Extensions;
+using FYP.Data;
+using FYP.Controllers;
 
 namespace FYP
 {
@@ -34,6 +36,8 @@ namespace FYP
                 builder.AddBlobServiceClient(Configuration["ConnectionStrings:AzureStorageConnectionString:blob"], preferMsi: true);
                 builder.AddQueueServiceClient(Configuration["ConnectionStrings:AzureStorageConnectionString:queue"], preferMsi: true);
             });
+            services.AddDbContext<FYPContext>();
+            services.AddScoped<StartUp>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

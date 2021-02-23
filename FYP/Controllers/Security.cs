@@ -17,7 +17,7 @@ namespace FYP.Controllers
                 b = Convert.FromBase64String(text);
                 decrypted = ASCIIEncoding.ASCII.GetString(b);
             }
-            catch (FormatException fe)
+            catch (FormatException)
             {
                 decrypted = "";
             }

@@ -13,7 +13,6 @@ using Microsoft.WindowsAzure.Storage.File;
 
 namespace FYP.Controllers
 {
-    [Authorize(Roles = "admin")]
     public class AdminController : Controller
     {
         private readonly FYPContext _context;
@@ -31,7 +30,35 @@ namespace FYP.Controllers
             this._constant = new Constant();
         }
 
+        private Boolean AdminRoleCheck() {
+            if (User.IsInRole("admin")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        private List<UserInfo> GetUserList()
+        {
+            List<UserAccess> UserAccessList = _context.UserAccess.Where(x => x.AdminId.Equals(_userManager.GetUserId(User))).ToList();
+            List<UserInfo> UserInfoList = new List<UserInfo>();
+
+            foreach (var item in UserAccessList)
+            {
+                string username = _context.Users.Where(x => x.Id.Equals(item.UserId)).First().UserName;
+                UserInfo userInfo = new UserInfo(item, username);
+                UserInfoList.Add(userInfo);
+            }
+
+            return UserInfoList;
+        }
+
         public IActionResult Index() {
+            if (!AdminRoleCheck()) {
+                return BadRequest();
+            }
+
             List<Activities> ActivitiesList = new List<Activities>();
             List<Notification> NotificationList = _context.Notification.ToList();
             var user = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First();
@@ -56,6 +83,11 @@ namespace FYP.Controllers
 
         public IActionResult Approve()
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             List<ApprovalRequest> ApprovalRequestList = _context.ApprovalRequest.Where(x => x.AdminId.Equals(_userManager.GetUserId(User))).ToList();
             List<RequestInfo> RequestInfoList = new List<RequestInfo>();
 
@@ -76,6 +108,11 @@ namespace FYP.Controllers
 
         public IActionResult ApproveRequest(string ApproveId) 
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             ApprovalRequest ApprovalRequest = _context.ApprovalRequest.Where(x => x.ApproveId.Equals(ApproveId)).First();
             UserAccess UserAccess = _context.UserAccess.Where(x => x.UserId.Equals(ApprovalRequest.ReceiverUserId)).First();
             UserAccess.AddFileList(ApprovalRequest.FileId);
@@ -118,6 +155,11 @@ namespace FYP.Controllers
 
         public IActionResult RejectRequest(string ApproveId)
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             ApprovalRequest ApprovalRequest = _context.ApprovalRequest.Where(x => x.ApproveId.Equals(ApproveId)).First();
             _context.ApprovalRequest.Remove(ApprovalRequest);
             var result = _context.SaveChangesAsync();
@@ -154,6 +196,11 @@ namespace FYP.Controllers
         [HttpPost]
         public IActionResult ApproveAllRequest(string IdList)
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             List<string> ApproveIdList = IdList.Split("|").ToList();
 
             bool AllSuccess = true;
@@ -217,6 +264,11 @@ namespace FYP.Controllers
 
         public IActionResult RejectAllRequest(string IdList)
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             List<string> ApproveIdList = IdList.Split("|").ToList();
 
             bool AllSuccess = true;
@@ -271,6 +323,11 @@ namespace FYP.Controllers
 
         public IActionResult Files()
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             List<RetrievedFileViewModel> ModelList = new List<RetrievedFileViewModel>();
             var FileList = _storage.GetFileList(_userManager.GetUserId(User)).Result;
 
@@ -284,41 +341,39 @@ namespace FYP.Controllers
             return View(ModelList);
         }
 
-        private List<UserInfo> GetUserList() {
-            List<UserAccess> UserAccessList = _context.UserAccess.Where(x => x.AdminId.Equals(_userManager.GetUserId(User))).ToList();
-            List<UserInfo> UserInfoList = new List<UserInfo>();
-
-            foreach (var item in UserAccessList)
-            {
-                string username = _context.Users.Where(x => x.Id.Equals(item.UserId)).First().UserName;
-                UserInfo userInfo = new UserInfo(item, username);
-                UserInfoList.Add(userInfo);
-            }
-
-            return UserInfoList;
-        }
-
         [ActionName("ViewUser")]
         public IActionResult ViewUser()
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             return View(GetUserList());
         }
 
         [ActionName("DeleteUser")]
         public IActionResult DeleteUser(string UserId)
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             IdentityUser UserToBeDelete = _context.Users.Where(x => x.Id.Equals(UserId)).First();
             UserAccess UserAccessToBeDelete = _context.UserAccess.Where(x => x.UserId.Equals(UserId)).First();
 
             _context.Users.Remove(UserToBeDelete);
+            _context.SaveChangesAsync().Wait();
+            _context.UserAccess.Remove(UserAccessToBeDelete);
             var result = _context.SaveChangesAsync();
             result.Wait();
-            _context.UserAccess.Remove(UserAccessToBeDelete);
-            var result2 = _context.SaveChangesAsync();
-            result2.Wait();
 
-            if (result2.IsCompletedSuccessfully)
+            if (result.IsCompletedSuccessfully)
             {
+                _context.LinkStatus.RemoveRange(_context.LinkStatus.Where(x => x.UserId.Equals(UserToBeDelete.Id)).ToList());
+                _context.SaveChangesAsync().Wait();
+
                 TempData["DeleteUserReturnMessage"] = "Successfully deleted this user!";
                 Notification notif = new Notification
                 {
@@ -336,18 +391,26 @@ namespace FYP.Controllers
             return RedirectToAction("ViewUser", "Admin");
         }
 
-        [ActionName("Upload")]
         public ActionResult Upload()
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             return View();
         }
 
 
         [HttpPost]
-        [ActionName("Upload")]
         [ValidateAntiForgeryToken]
         public ActionResult Upload(FileViewModel model)
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest();
@@ -382,17 +445,25 @@ namespace FYP.Controllers
             return View();
         }
 
-        [ActionName("CreateUser")]
         public ActionResult CreateUser()
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             return View();
         }
 
         [HttpPost]
-        [ActionName("CreateUser")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> CreateUserAsync(NewUserViewModel model)
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             if (model == null)
             {
                 return BadRequest();
@@ -441,9 +512,13 @@ namespace FYP.Controllers
             return RedirectToAction("ViewUser", "Admin");
         }
 
-        [ActionName("Delete")]
         public ActionResult Delete(string FileName)
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             if (FileName == null)
             {
                 return BadRequest();
@@ -461,10 +536,14 @@ namespace FYP.Controllers
         }
 
         [HttpPost]
-        [ActionName("DeleteFile")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteFile(string FileName)
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             if (FileName == null)
             {
                 return BadRequest();
@@ -501,9 +580,13 @@ namespace FYP.Controllers
 
         }
 
-        [ActionName("Authorize")]
         public ActionResult Authorize(string FileName)
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             if (FileName == null)
             {
                 return BadRequest();
@@ -522,11 +605,14 @@ namespace FYP.Controllers
             return View(UserInfoList);
         }
 
-
-        [ActionName("AuthorizeAction")]
         [ValidateAntiForgeryToken]
         public ActionResult AuthorizeAction(string UserId, string FileName)
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             UserAccess UserAccess = _context.UserAccess.Where(x => x.UserId.Equals(UserId)).First();
             if (UserAccess.FileList == null)
             {
