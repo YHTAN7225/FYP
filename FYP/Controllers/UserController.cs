@@ -43,7 +43,6 @@ namespace FYP.Controllers
                 return false;
             }
         }
-
         public IActionResult Index()
         {
             if (!UserRoleCheck()) {
@@ -71,7 +70,6 @@ namespace FYP.Controllers
             ActivitiesList.Reverse();
             return View(ActivitiesList);
         }
-
         public IActionResult GenerateLink()
         {
             if (!UserRoleCheck())
@@ -81,18 +79,26 @@ namespace FYP.Controllers
 
             return View();
         }
-
         public IActionResult GenerateLinkButton()
         {
+            if (!UserRoleCheck())
+            {
+                return BadRequest();
+            }
+
             LinkStatus LinkStatus= new LinkStatus(_userManager.GetUserId(User));
             _context.LinkStatus.Add(LinkStatus);
             _context.SaveChanges();
             TempData["Link"] = _constant.GeneratedLinkURL(LinkStatus.LinkId); 
             return RedirectToAction("GenerateLink", "User");
         }
-
         public IActionResult Sign()
         {
+            if (!UserRoleCheck())
+            {
+                return BadRequest();
+            }
+
             DoubleSignatureRequest DoubleSignatureRequest = new DoubleSignatureRequest {
                 UserAsSender = _context.SignatureRequest.Where(x => x.SenderUserName.Equals(_context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName)).ToList(),
                 UserAsReceiver = _context.SignatureRequest.Where(x => x.ReceiverUserName.Equals(_context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName)).ToList()
@@ -103,9 +109,13 @@ namespace FYP.Controllers
 
             return View(DoubleSignatureRequest);
         }
-
         public IActionResult CreateSignRequest(string FileName)
         {
+            if (!UserRoleCheck())
+            {
+                return BadRequest();
+            }
+
             TempData["FileName"] = FileName;
 
             List<UserInfo> UserInfoList = new List<UserInfo>();
@@ -119,9 +129,13 @@ namespace FYP.Controllers
             }
                 return View(UserInfoList);
         }
-
         public IActionResult CreateSignRequestAction(string FileName, string ReceiverUserName)
         {
+            if (!UserRoleCheck())
+            {
+                return BadRequest();
+            }
+
             SignatureRequest SignatureRequest = new SignatureRequest()
             {
                 FileName = FileName,
@@ -142,8 +156,13 @@ namespace FYP.Controllers
             }
             return RedirectToAction("Files", "User");
         }
+        public IActionResult SignAction(string SignatureId) 
+        {
+            if (!UserRoleCheck())
+            {
+                return BadRequest();
+            }
 
-        public IActionResult SignAction(string SignatureId) {
             SignatureRequest SignatureRequest = _context.SignatureRequest.Where(x => x.SignatureId.Equals(SignatureId)).First();
             SignatureRequest.Sign();
 
@@ -169,7 +188,6 @@ namespace FYP.Controllers
 
             return RedirectToAction("Index", "User");
         }
-
         public IActionResult Files()
         {
             if (!UserRoleCheck())
@@ -189,7 +207,6 @@ namespace FYP.Controllers
             
             return View(_storage.GetFileListBasedOnUser(ua.AdminId, FileList));
         }
-
         [HttpGet]
         public IActionResult Download(string FileName)
         {
@@ -203,8 +220,6 @@ namespace FYP.Controllers
 
             return File(file.OpenReadAsync().Result, file.Properties.ContentType, file.Name);
         }
-           
-
         public IActionResult Share(string FileName)
         {
             if (!UserRoleCheck())
@@ -232,7 +247,6 @@ namespace FYP.Controllers
 
             return View(UserInfoList);
         }
-
         public IActionResult ShareAction(string UserId, string AdminId, string FileId, string ReceiverId) {
             if (!UserRoleCheck())
             {
