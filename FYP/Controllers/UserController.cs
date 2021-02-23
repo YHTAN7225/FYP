@@ -93,21 +93,81 @@ namespace FYP.Controllers
 
         public IActionResult Sign()
         {
-            if (!UserRoleCheck())
+            DoubleSignatureRequest DoubleSignatureRequest = new DoubleSignatureRequest {
+                UserAsSender = _context.SignatureRequest.Where(x => x.SenderUserName.Equals(_context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName)).ToList(),
+                UserAsReceiver = _context.SignatureRequest.Where(x => x.ReceiverUserName.Equals(_context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName)).ToList()
+            };
+
+            DoubleSignatureRequest.UserAsSender.Reverse();
+            DoubleSignatureRequest.UserAsReceiver.Reverse();
+
+            return View(DoubleSignatureRequest);
+        }
+
+        public IActionResult CreateSignRequest(string FileName)
+        {
+            TempData["FileName"] = FileName;
+
+            List<UserInfo> UserInfoList = new List<UserInfo>();
+            AdminAccess AdminAccess = _context.AdminAccess.Where(x => x.UserList.Contains(_userManager.GetUserId(User))).First();
+            List<UserAccess> UserAccessList = _context.UserAccess.Where(x => x.AdminId.Equals(AdminAccess.AdminId)).ToList();
+            foreach (var item in UserAccessList)
             {
-                return BadRequest();
+                if (!_userManager.GetUserId(User).Equals(item.UserId)) {
+                    UserInfoList.Add(new UserInfo(item, _context.Users.Where(x => x.Id.Equals(item.UserId)).First().UserName));
+                }
             }
+                return View(UserInfoList);
+        }
 
-            List<SignatureRequest> SignatureRequestList = _context.SignatureRequest.Where(x => x.SenderUserName.Equals(_context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName)).ToList();
-            SignatureRequestList.AddRange(_context.SignatureRequest.Where(x => x.ReceiverUserName.Equals(_context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName)).ToList());
+        public IActionResult CreateSignRequestAction(string FileName, string ReceiverUserName)
+        {
+            SignatureRequest SignatureRequest = new SignatureRequest()
+            {
+                FileName = FileName,
+                ReceiverUserName = ReceiverUserName,
+                SenderUserName = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName,
+                SignatureStatus = "false"
+            };
 
-            return View(SignatureRequestList);
+            _context.SignatureRequest.Add(SignatureRequest);
+            var result = _context.SaveChangesAsync();
+            result.Wait();
+
+            if (result.IsCompletedSuccessfully) {
+                TempData["CreateSignRequestActionReturnMessage"] = "Request for Signature is created successfully!";
+            }
+            else {
+                TempData["CreateSignRequestActionReturnMessage"] = "Error when creating signature request!";
+            }
+            return RedirectToAction("Files", "User");
         }
 
         public IActionResult SignAction(string SignatureId) {
-            
+            SignatureRequest SignatureRequest = _context.SignatureRequest.Where(x => x.SignatureId.Equals(SignatureId)).First();
+            SignatureRequest.Sign();
 
-            return RedirectToAction("Admin", "Sign");
+            var result = _context.SaveChangesAsync();
+            result.Wait();
+
+            if (result.IsCompletedSuccessfully) {
+                Notification notif = new Notification
+                {
+                    ActionName = "SIGNATURE",
+                    PrimaryUserName = SignatureRequest.SenderUserName,
+                    SecondaryUserName = SignatureRequest.ReceiverUserName,
+                    FileName = SignatureRequest.FileName
+                };
+                _context.Notification.Add(notif);
+                _context.SaveChangesAsync().Wait();
+
+                TempData["SignActionReturnMessage"] = "You have signed this file!";
+            }
+            else {
+                TempData["SignActionReturnMessage"] = "Error when signing this file!";
+            }
+
+            return RedirectToAction("Index", "User");
         }
 
         public IActionResult Files()

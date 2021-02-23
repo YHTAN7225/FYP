@@ -42,7 +42,7 @@
             switch (ActionName)
             {
                 case "SIGNATURE":
-                    return SecondaryName + " has signed a document (" + FileName + ") requested by you.";
+                    return SecondaryName + " has signed a document (" + FileName + ") requested by " + PrimaryName + ".";
                 case "REQUEST":
                     return "You have requested access of file {" + FileName + "} to " + SecondaryName + " from admin.";
                 case "APPROVED":

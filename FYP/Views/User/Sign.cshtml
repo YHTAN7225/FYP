@@ -1,19 +1,28 @@
-﻿@model IEnumerable<SignatureRequest>
+﻿@model DoubleSignatureRequest
 
 @{
     ViewData["Title"] = "Sign";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Sign</h1>
-<p>
-    <a asp-action="RequestSignature">Create new sign request</a>
-</p>
+<h1>Signature</h1>
+<div class="col-md-12 text-right">
+    <form asp-action="Files" >
+        <input type="submit" value="Create new sign request" class="btn btn-primary" />
+    </form>
+</div>
+<div>
+    <h5>Incoming Sign Request</h5>
+</div>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                Sender 
+                Time
+            </th>
+            <th>
+                Sender
             </th>
             <th>
                 File Name
@@ -22,19 +31,65 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.UserAsReceiver)
         {
-            <tr>
-                <td>
-                    @item.SenderUserName
-                </td>
-                <td>
-                    @item.FileName
-                </td>
-                <td>
-                    
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @item.TimeStamp
+            </td>
+            <td>
+                @item.SenderUserName
+            </td>
+            <td>
+                @item.FileName
+            </td>
+            <td>
+                <form asp-action="SignAction" asp-route-SignatureId="@item.SignatureId">
+                    <input type="submit" value="Sign" class="btn btn-primary" />
+                </form>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+<br><br>
+
+<h5>Outgoing Sign Request</h5>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Time Created
+            </th>
+            <th>
+                Receiver
+            </th>
+            <th>
+                File Name
+            </th>
+            <th>
+                Time Signed
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.UserAsSender)
+        {
+        <tr>
+            <td>
+                @item.TimeStamp
+            </td>
+            <td>
+                @item.ReceiverUserName
+            </td>
+            <td>
+                @item.FileName
+            </td>
+            <td>
+                @item.StringIsSigned()
+            </td>
+        </tr>
         }
     </tbody>
 </table>

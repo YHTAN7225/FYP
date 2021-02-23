@@ -1,0 +1,43 @@
+﻿@model IEnumerable<FYP.Models.UserInfo>
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Create Sign Request";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create Sign Request</h1>
+<h5>Select a user to request sign request on selected file.</h5>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                User ID
+            </th>
+            <th>
+                User Name
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserAccess.UserId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    <form asp-action="CreateSignRequestAction" asp-route-FileName="@TempData["FileName"]" asp-route-ReceiverUserName="@item.UserName">
+                        <input type="submit" value="Request Signature" class="btn btn-primary" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

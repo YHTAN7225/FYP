@@ -34,3 +34,12 @@
         }
     </tbody>
 </table>
+
+@if (TempData["SignActionReturnMessage"] != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@TempData["SignActionReturnMessage"]");
+            };
+    </script>
+}

@@ -15,10 +15,16 @@ namespace FYP.Models
         public string ReceiverUserName { get; set; }
         public string FileName { get; set; }
         public string SignatureStatus { get; set; }
+        public DateTime SignedTime { get; set; }
 
         public SignatureRequest() {
             this.SignatureId = Guid.NewGuid().ToString();
             this.TimeStamp = DateTime.Now;
+        }
+
+        public void Sign() {
+            this.SignatureStatus = "true";
+            this.SignedTime = DateTime.Now;
         }
 
         public Boolean IsSigned() {
@@ -26,6 +32,15 @@ namespace FYP.Models
                 return true;
             }
             return false;
+        }
+
+        public String StringIsSigned()
+        {
+            if (this.SignatureStatus.ToLower() == "true")
+            {
+                return SignedTime.ToString();
+            }
+            return "Not Signed";
         }
     }
 }

@@ -23,8 +23,18 @@
                 <td>@item.RetrievedFile.Name</td>
                 <td>@item.RetrievedFile.Properties.LastModified.GetValueOrDefault().ToLocalTime().DateTime</td>
                 <td>
-                    @Html.ActionLink("Share", "Share", new { FileName = item.RetrievedFile.Name }) |
-                    @Html.ActionLink("Download", "Download", new { FileName = item.RetrievedFile.Name })
+                    <div class="btn-group float-right">
+                        <form asp-action="Share" asp-route-FileName="@item.RetrievedFile.Name">
+                            <input type="submit" value="Share" class="btn btn-primary mx-1" />
+                        </form>
+                        <form asp-action="Download" asp-route-FileName="@item.RetrievedFile.Name">
+                            <input type="submit" value="Download" class="btn btn-primary mx-1" />
+                        </form>
+                        <form asp-action="CreateSignRequest" asp-route-FileName="@item.RetrievedFile.Name">
+                            <input type="submit" value="Signature" class="btn btn-primary mx-1" />
+                        </form>
+                    </div>
+
                 </td>
             </tr>
         }
@@ -36,6 +46,14 @@
     <script type="text/javascript">
             window.onload = function () {
                 alert("@TempData["ShareActionReturnMessage"]");
+            };
+    </script>
+}
+@if (TempData["CreateSignRequestActionReturnMessage"] != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@TempData["CreateSignRequestActionReturnMessage"]");
             };
     </script>
 }
