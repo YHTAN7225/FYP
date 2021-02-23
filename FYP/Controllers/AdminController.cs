@@ -38,7 +38,6 @@ namespace FYP.Controllers
                 return false;
             }
         }
-
         private List<UserInfo> GetUserList()
         {
             List<UserAccess> UserAccessList = _context.UserAccess.Where(x => x.AdminId.Equals(_userManager.GetUserId(User))).ToList();
@@ -53,7 +52,6 @@ namespace FYP.Controllers
 
             return UserInfoList;
         }
-
         public IActionResult Index() {
             if (!AdminRoleCheck()) {
                 return BadRequest();
@@ -80,7 +78,6 @@ namespace FYP.Controllers
             ActivitiesList.Reverse();
             return View(ActivitiesList);
         }
-
         public IActionResult Approve()
         {
             if (!AdminRoleCheck())
@@ -105,7 +102,6 @@ namespace FYP.Controllers
             }
             return View(RequestInfoList);
         }
-
         public IActionResult ApproveRequest(string ApproveId) 
         {
             if (!AdminRoleCheck())
@@ -152,7 +148,6 @@ namespace FYP.Controllers
 
             return RedirectToAction("Approve", "Admin");
         }
-
         public IActionResult RejectRequest(string ApproveId)
         {
             if (!AdminRoleCheck())
@@ -192,7 +187,6 @@ namespace FYP.Controllers
 
             return RedirectToAction("Approve", "Admin");
         }
-
         [HttpPost]
         public IActionResult ApproveAllRequest(string IdList)
         {
@@ -261,7 +255,6 @@ namespace FYP.Controllers
 
             return RedirectToAction("Approve", "Admin");
         }
-
         public IActionResult RejectAllRequest(string IdList)
         {
             if (!AdminRoleCheck())
@@ -320,7 +313,6 @@ namespace FYP.Controllers
 
             return RedirectToAction("Approve", "Admin");
         }
-
         public IActionResult Files()
         {
             if (!AdminRoleCheck())
@@ -340,8 +332,6 @@ namespace FYP.Controllers
 
             return View(ModelList);
         }
-
-        [ActionName("ViewUser")]
         public IActionResult ViewUser()
         {
             if (!AdminRoleCheck())
@@ -351,8 +341,6 @@ namespace FYP.Controllers
 
             return View(GetUserList());
         }
-
-        [ActionName("DeleteUser")]
         public IActionResult DeleteUser(string UserId)
         {
             if (!AdminRoleCheck())
@@ -390,8 +378,7 @@ namespace FYP.Controllers
             }
             return RedirectToAction("ViewUser", "Admin");
         }
-
-        public ActionResult Upload()
+        public IActionResult Upload()
         {
             if (!AdminRoleCheck())
             {
@@ -400,11 +387,9 @@ namespace FYP.Controllers
 
             return View();
         }
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Upload(FileViewModel model)
+        public IActionResult Upload(FileViewModel model)
         {
             if (!AdminRoleCheck())
             {
@@ -444,8 +429,7 @@ namespace FYP.Controllers
             }
             return View();
         }
-
-        public ActionResult CreateUser()
+        public IActionResult CreateUser()
         {
             if (!AdminRoleCheck())
             {
@@ -454,10 +438,9 @@ namespace FYP.Controllers
 
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateUserAsync(NewUserViewModel model)
+        public async Task<IActionResult> CreateUserAsync(NewUserViewModel model)
         {
             if (!AdminRoleCheck())
             {
@@ -511,8 +494,7 @@ namespace FYP.Controllers
             }
             return RedirectToAction("ViewUser", "Admin");
         }
-
-        public ActionResult Delete(string FileName)
+        public IActionResult Delete(string FileName)
         {
             if (!AdminRoleCheck())
             {
@@ -534,10 +516,9 @@ namespace FYP.Controllers
                 return View(model);
             }
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteFile(string FileName)
+        public IActionResult DeleteFile(string FileName)
         {
             if (!AdminRoleCheck())
             {
@@ -579,8 +560,7 @@ namespace FYP.Controllers
             }
 
         }
-
-        public ActionResult Authorize(string FileName)
+        public IActionResult Authorize(string FileName)
         {
             if (!AdminRoleCheck())
             {
@@ -604,9 +584,8 @@ namespace FYP.Controllers
             TempData["FileName"] = FileName;
             return View(UserInfoList);
         }
-
         [ValidateAntiForgeryToken]
-        public ActionResult AuthorizeAction(string UserId, string FileName)
+        public IActionResult AuthorizeAction(string UserId, string FileName)
         {
             if (!AdminRoleCheck())
             {
@@ -652,6 +631,5 @@ namespace FYP.Controllers
             }
             return RedirectToAction("Files", "Admin");
         }
-
     }
 }
