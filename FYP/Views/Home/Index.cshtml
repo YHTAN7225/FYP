@@ -26,23 +26,43 @@
                 </a>
             }
         }
-        else { 
-            <a class="btn btn-primary" style="margin-left: 60px;">
+        else
+        {
+            <a class="btn btn-primary" style="margin-left: 60px;" a href="#AboutUs" data-target="#myNavbar">
                 <p style="font-weight: bold; margin: 10px 20px 10px 20px">About Us</p>
             </a>
         }
     </div>
 
-    <div class="container py-5">
+    <div class="container py-5" id="AboutUs">
         <h1>About StoreDoc</h1>
-        <div class="row">
+        <div class="row py-5">
             <div class="col-sm-4">
-                LOGO HERE
+                <div class="img-fluid"><img src="~/images/files.png" class="mx-auto d-block" style="height:200px; width:200px;"></div>
+            </div>
+            <div class="col-sm-8 shadow-lg bg-white rounded">
+                <h5>File Storage</h5> <br>
+                <h3>Store your files and documents in StoreDoc. File sharing between multiple users has never been easier!</h3>
+                <br><br><br><br>
+            </div>
+        </div>
+        <div class="row py-5">
+            <div class="col-sm-8 shadow-lg bg-white rounded">
+                <h5>User Management</h5> <br>
+                <h3>Creating, managing, giving access, all within the grasp of the super admin account. Maintaining the authorities hierarchy with ease! </h3>
+            </div>
+            <div class="col-sm-4">
+                <div class="img-fluid"><img src="~/images/admin.png" class="mx-auto d-block" style="height:200px; width:200px;"></div>
+            </div>
+        </div>
+        <div class="row py-5">
+            <div class="col-sm-4">
+                <div class="img-fluid"><img src="~/images/signature.png" class="mx-auto d-block" style="height:200px; width:200px;"></div>
                 <br><br><br><br>
             </div>
             <div class="col-sm-8 shadow-lg bg-white rounded">
-                DESCRIPTION HERE
-                <br><br><br><br>
+                <h5>Built-in Signature</h5> <br>
+                <h3>Wondering if have others looked at the files you sent them? Worry no more, StoreDoc Signature feature allows you to know at a single glance!</h3>
             </div>
         </div>
     </div>

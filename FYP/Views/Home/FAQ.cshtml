@@ -1,5 +1,57 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Home";
 }
+
+<div class="container py-5" style="background-image:url(../../images/FAQ.jpg); background-repeat: no-repeat; background-size: cover; width: 1130px; height: 500px; ">
+    <h1 class="pt-5" style="padding-left: 60px; font-size: 100px; color: white;">FAQ</h1>
+</div>
+
+<div id="accordion">
+    <div class="card">
+        <div class="card-header">
+            <a class="card-link" data-toggle="collapse" href="#collapseOne">
+                <i class="far fa-question-circle"></i> Is StoreDoc Free?
+            </a>
+        </div>
+        <div id="collapseOne" class="collapse show" data-parent="#accordion">
+            <div class="card-body">
+                Yes! StoreDoc is free for use. Register an account now and start managing your files and users!
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <a class="collapsed card-link" data-toggle="collapse" href="#collapseTwo">
+                <i class="far fa-question-circle"></i> How to create account for employees?
+            </a>
+        </div>
+        <div id="collapseTwo" class="collapse" data-parent="#accordion">
+            <div class="card-body">
+                To create accounts for employees, an admin account is required. Admin account can be register on the top-right corner!
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <a class="collapsed card-link" data-toggle="collapse" href="#collapseThree">
+                <i class="far fa-question-circle"></i> What features StoreDoc provide?
+            </a>
+        </div>
+        <div id="collapseThree" class="collapse" data-parent="#accordion">
+            <div class="card-body">
+                StoreDoc allow users to :
+                <ul>
+                    <li>Store and retrieve files</li>
+                    <li>Share files between users</li>
+                    <li>Manage users</li>
+                    <li>Track activities</li>
+                    <li>Sign documents with a built-in signature feature</li>
+                    <li>And more coming soon . . .</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
