@@ -647,6 +647,11 @@ namespace FYP.Controllers
         }
 
         public IActionResult Unauthorize(string UserId) {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             UserAccess UserAccess = _context.UserAccess.Where(x => x.UserId.Equals(UserId)).First();
             List<RetrievedFileViewModel> ModelList = new List<RetrievedFileViewModel>();
 
@@ -671,6 +676,11 @@ namespace FYP.Controllers
 
         public IActionResult UnauthorizeAction(string UserId, string FileName)
         {
+            if (!AdminRoleCheck())
+            {
+                return BadRequest();
+            }
+
             UserAccess UserAccess = _context.UserAccess.Where(x => x.UserId.Equals(UserId)).First();
             UserAccess.RemoveFileAccess(_security.Encrypt(FileName));
             var result = _context.SaveChangesAsync();
