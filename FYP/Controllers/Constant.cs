@@ -28,6 +28,8 @@
                     return "You have rejected the request of " + SecondaryName + " to share the access of file {" + FileName + "}.";
                 case "SHARE":
                     return "You have shared access of file {" + FileName + "} to " + PrimaryName + ".";
+                case "REMOVE_ACCESS":
+                    return "You have removed access of file {" + FileName + "} from " + SecondaryName + ".";
                 case "UPLOAD":
                     return "You have uploaded a file {" + FileName + "}.";
                 case "LINK_UPLOAD":
@@ -51,6 +53,8 @@
                     return "Admin has rejected access of file {" + FileName + "} as per request from " + PrimaryName + " to " + SecondaryName + ".";
                 case "SHARE":
                     return "Admin has shared access of file {" + FileName + "} to you.";
+                case "REMOVE_ACCESS":
+                    return "Admin has removed access of file {" + FileName + "} from you.";
                 case "LINK_UPLOAD":
                     return "A client has uploaded a file {" + FileName + "} to your account.";
                 default:

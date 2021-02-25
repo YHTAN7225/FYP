@@ -1,16 +1,36 @@
-﻿@{
+﻿@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
     ViewData["Title"] = "Home";
 }
 
 <div class="row">
-    <div class ="container py-5" style="background-image:url(../../images/HomeStartNow.jpg); background-repeat: no-repeat; background-size: cover; width: 1130px; height: 500px; ">
+    <div class="container py-5" style="background-image:url(../../images/HomeStartNow.jpg); background-repeat: no-repeat; background-size: cover; width: 1130px; height: 500px; ">
 
-        <h1 class ="pt-5"style="padding-left: 60px; font-size: 100px; color: white;">StoreDoc</h1>
+        <h1 class="pt-5" style="padding-left: 60px; font-size: 100px; color: white;">StoreDoc</h1>
         <p class="lead" style="color: white; font-size: 40px; padding-left: 60px; padding-top: 10px;">Online Storage Platform</p>
 
-        <a class="btn btn-primary" style="margin-left: 60px;" asp-controller="Home" asp-action="Index">
-            <p style="font-weight: bold; margin: 10px 20px 10px 20px">Get Started</p>
-        </a>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            @if (User.IsInRole("admin"))
+            {
+                <a class="btn btn-primary" style="margin-left: 60px;" asp-controller="Admin" asp-action="Index">
+                    <p style="font-weight: bold; margin: 10px 20px 10px 20px">Get Started</p>
+                </a>
+            }
+            else if (User.IsInRole("user"))
+            {
+                <a class="btn btn-primary" style="margin-left: 60px;" asp-controller="User" asp-action="Index">
+                    <p style="font-weight: bold; margin: 10px 20px 10px 20px">Get Started</p>
+                </a>
+            }
+        }
+        else { 
+            <a class="btn btn-primary" style="margin-left: 60px;">
+                <p style="font-weight: bold; margin: 10px 20px 10px 20px">About Us</p>
+            </a>
+        }
     </div>
 
     <div class="container py-5">
@@ -20,7 +40,7 @@
                 LOGO HERE
                 <br><br><br><br>
             </div>
-            <div class="col-sm-8 shadow-lg bg-white rounded" >
+            <div class="col-sm-8 shadow-lg bg-white rounded">
                 DESCRIPTION HERE
                 <br><br><br><br>
             </div>

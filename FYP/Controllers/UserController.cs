@@ -43,6 +43,7 @@ namespace FYP.Controllers
                 return false;
             }
         }
+
         public IActionResult Index()
         {
             if (!UserRoleCheck()) {
@@ -70,6 +71,7 @@ namespace FYP.Controllers
             ActivitiesList.Reverse();
             return View(ActivitiesList);
         }
+
         public IActionResult GenerateLink()
         {
             if (!UserRoleCheck())
@@ -79,6 +81,7 @@ namespace FYP.Controllers
 
             return View();
         }
+
         public IActionResult GenerateLinkButton()
         {
             if (!UserRoleCheck())
@@ -92,6 +95,7 @@ namespace FYP.Controllers
             TempData["Link"] = _constant.GeneratedLinkURL(LinkStatus.LinkId); 
             return RedirectToAction("GenerateLink", "User");
         }
+
         public IActionResult Sign()
         {
             if (!UserRoleCheck())
@@ -109,6 +113,7 @@ namespace FYP.Controllers
 
             return View(DoubleSignatureRequest);
         }
+
         public IActionResult CreateSignRequest(string FileName)
         {
             if (!UserRoleCheck())
@@ -129,6 +134,7 @@ namespace FYP.Controllers
             }
                 return View(UserInfoList);
         }
+
         public IActionResult CreateSignRequestAction(string FileName, string ReceiverUserName)
         {
             if (!UserRoleCheck())
@@ -156,6 +162,7 @@ namespace FYP.Controllers
             }
             return RedirectToAction("Files", "User");
         }
+
         public IActionResult SignAction(string SignatureId) 
         {
             if (!UserRoleCheck())
@@ -188,6 +195,7 @@ namespace FYP.Controllers
 
             return RedirectToAction("Index", "User");
         }
+
         public IActionResult Files()
         {
             if (!UserRoleCheck())
@@ -207,6 +215,7 @@ namespace FYP.Controllers
             
             return View(_storage.GetFileListBasedOnUser(ua.AdminId, FileList));
         }
+
         [HttpGet]
         public IActionResult Download(string FileName)
         {
@@ -220,6 +229,7 @@ namespace FYP.Controllers
 
             return File(file.OpenReadAsync().Result, file.Properties.ContentType, file.Name);
         }
+
         public IActionResult Share(string FileName)
         {
             if (!UserRoleCheck())
@@ -247,6 +257,7 @@ namespace FYP.Controllers
 
             return View(UserInfoList);
         }
+
         public IActionResult ShareAction(string UserId, string AdminId, string FileId, string ReceiverId) {
             if (!UserRoleCheck())
             {

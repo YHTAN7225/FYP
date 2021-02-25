@@ -1,0 +1,53 @@
+﻿@model IEnumerable<FYP.Models.RetrievedFileViewModel>
+
+@{
+    ViewData["Title"] = "Unauthorize";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Unauthorize</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                File Name
+            </th>
+            <th>
+                Last Modified
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.RetrievedFile.Name
+                    </td>
+                    <td>
+                        @item.RetrievedFile.Properties.LastModified.GetValueOrDefault().ToLocalTime().DateTime
+                    </td>
+                    <td>
+                        <form asp-action="UnauthorizeAction" asp-route-FileName="@item.RetrievedFile.Name" asp-route-UserId="@TempData["UserId"]">
+                            <input type="submit" value="Remove Access" class="btn btn-primary" />
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td></td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+

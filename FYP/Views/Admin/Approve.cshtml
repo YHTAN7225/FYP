@@ -57,12 +57,14 @@
                 @item.FileName
             </td>
             <td>
-                <form asp-action="ApproveRequest" asp-route-ApproveId=@item.ApproveId class="d-inline-block">
-                    <input type="submit" value="Approve" class="btn btn-primary" />
-                </form>
-                <form asp-action="RejectRequest" asp-route-ApproveId=@item.ApproveId class="d-inline-block">
-                    <input type="submit" value="Reject" class="btn btn-secondary" />
-                </form>
+                <div class="btn-group float-right">
+                    <form asp-action="ApproveRequest" asp-route-ApproveId=@item.ApproveId class="d-inline-block">
+                        <input type="submit" value="Approve" class="btn btn-primary" />
+                    </form>
+                    <form asp-action="RejectRequest" asp-route-ApproveId=@item.ApproveId class="d-inline-block">
+                        <input type="submit" value="Reject" class="btn btn-secondary" />
+                    </form>
+                </div>
             </td>
         </tr>
         }

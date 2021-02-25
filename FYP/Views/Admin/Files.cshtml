@@ -26,8 +26,14 @@
                 <td>@item.RetrievedFile.Name</td>
                 <td>@item.RetrievedFile.Properties.LastModified.GetValueOrDefault().ToLocalTime().DateTime</td>
                 <td>
-                    @Html.ActionLink("Authorize", "Authorize", new { FileName = item.RetrievedFile.Name }) |
-                    @Html.ActionLink("Delete", "Delete", new { FileName = item.RetrievedFile.Name })
+                    <div class="btn-group float-right">
+                        <form asp-action="Authorize" asp-route-FileName=@item.RetrievedFile.Name class="d-inline-block mx-1">
+                            <input type="submit" value="Authorize" class="btn btn-primary" />
+                        </form>
+                        <form asp-action="Delete" asp-route-FileName=@item.RetrievedFile.Name class="d-inline-block mx-1">
+                            <input type="submit" value="Delete" class="btn btn-secondary" />
+                        </form>
+                    </div>
                 </td>
             </tr>
         }

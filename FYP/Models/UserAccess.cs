@@ -22,6 +22,7 @@ namespace FYP.Models
             this.UserId = UserId;
             this.AdminId = AdminId;
             this.OrganizationName = OrganizationName;
+            this.FileList = "";
         }
 
         public void AddFileList(string fileId) {
@@ -56,7 +57,7 @@ namespace FYP.Models
             }
         }
 
-        public void DeleteFileAccessList(string FileId) {
+        public void RemoveFileAccess(string FileId) {
             List<string> list = this.FileList.Split("|").ToList();
             this.FileList = "";
 

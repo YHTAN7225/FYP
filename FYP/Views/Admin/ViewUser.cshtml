@@ -34,7 +34,14 @@
                     @Html.DisplayFor(modelItem => item.UserName)
                 </td>
                 <td>
-                    @Html.ActionLink("Delete User", "DeleteUser", new { UserId = item.UserAccess.UserId })
+                    <div class="btn-group float-right">
+                        <form asp-action="DeleteUser" asp-route-UserId=@item.UserAccess.UserId class="d-inline-block mx-1">
+                            <input type="submit" value="Delete User" class="btn btn-primary" />
+                        </form>
+                        <form asp-action="Unauthorize" asp-route-UserId=@item.UserAccess.UserId class="d-inline-block mx-1">
+                            <input type="submit" value="View File" class="btn btn-secondary" />
+                        </form>
+                    </div>
                 </td>
             </tr>
         }

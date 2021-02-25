@@ -47,14 +47,14 @@
 
 <script>
     function DisplayFilesName() {
-        var table = document.getElementById("fileTable"); //id of my table
+        var table = document.getElementById("fileTable"); 
         var tableRows = table.getElementsByTagName('tr');
 
         for (var x = tableRows.length - 1; x > 0; x--) {
             table.removeChild(tableRows[x]);
         }
 
-        var filelist = document.getElementById("upload"); // id of my upload button
+        var filelist = document.getElementById("upload"); 
 
         for (var i = 0; i < filelist.files.length; i++) {
             var row = document.createElement("tr");
