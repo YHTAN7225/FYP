@@ -14,31 +14,38 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                User ID
-            </th>
-            <th>
-                User Name
-            </th>
+            <th>User ID</th>
+            <th>User Name</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (!Model.Any())
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserAccess.UserId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserName)
-                </td>
-                <td>
-                    <form asp-action="AuthorizeAction" asp-route-FileName="@FileName" asp-route-UserId="@item.UserAccess.UserId">
-                        <input type="submit" value="Authorize" class="btn btn-primary" />
-                    </form>
-                </td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td></td>
             </tr>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserAccess.UserId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        <form asp-action="AuthorizeAction" asp-route-FileName="@FileName" asp-route-UserId="@item.UserAccess.UserId">
+                            <input type="submit" value="Authorize" class="btn btn-primary" />
+                        </form>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>

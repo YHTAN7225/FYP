@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FYP.Models
 {
-    public class Activities
+    public class ActivitiesViewModel
     {
         public string Activity { get; set; }
 

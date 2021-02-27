@@ -18,10 +18,10 @@ namespace FYP.Controllers
     public class UserController : Controller
     {
         private readonly FYPContext _context;
-        private UserManager<IdentityUser> _userManager;
-        private Storage _storage;
-        private Security _security;
-        private Constant _constant;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly Storage _storage;
+        private readonly Security _security;
+        private readonly Constant _constant;
 
         public UserController(FYPContext context, UserManager<IdentityUser> userManager)
         {
@@ -50,14 +50,14 @@ namespace FYP.Controllers
                 return BadRequest();
             }
 
-            List<Activities> ActivitiesList = new List<Activities>();
+            List<ActivitiesViewModel> ActivitiesList = new List<ActivitiesViewModel>();
             List<Notification> NotificationList = _context.Notification.ToList();
             var user = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First();
 
             foreach (var item in NotificationList) {
                 if ((item.PrimaryUserName == user.UserName) || (item.SecondaryUserName == user.UserName)) 
                 {
-                    var act = new Activities
+                    var act = new ActivitiesViewModel
                     {
                         Activity = _constant.UserGetMessage(item.ActionName, item.PrimaryUserName, item.SecondaryUserName, item.FileName),
                         TimeStamp = item.TimeStamp
@@ -103,9 +103,19 @@ namespace FYP.Controllers
                 return BadRequest();
             }
 
+            var list = _context.SignatureRequest.Where(x => x.ReceiverUserName.Equals(_context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName)).ToList();
+            List<SignatureRequest> UserAsReceiver = new List<SignatureRequest>();
+
+            foreach (var item in list) {
+                if (!item.IsSigned()) {
+                    list.Add(item);
+                }
+            }
+
+
             DoubleSignatureRequest DoubleSignatureRequest = new DoubleSignatureRequest {
                 UserAsSender = _context.SignatureRequest.Where(x => x.SenderUserName.Equals(_context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName)).ToList(),
-                UserAsReceiver = _context.SignatureRequest.Where(x => x.ReceiverUserName.Equals(_context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First().UserName)).ToList()
+                UserAsReceiver = UserAsReceiver
             };
 
             DoubleSignatureRequest.UserAsSender.Reverse();
@@ -128,8 +138,11 @@ namespace FYP.Controllers
             List<UserAccess> UserAccessList = _context.UserAccess.Where(x => x.AdminId.Equals(AdminAccess.AdminId)).ToList();
             foreach (var item in UserAccessList)
             {
-                if (!_userManager.GetUserId(User).Equals(item.UserId)) {
-                    UserInfoList.Add(new UserInfo(item, _context.Users.Where(x => x.Id.Equals(item.UserId)).First().UserName));
+                if (item.HaveFile(FileName)) {
+                    if (!_userManager.GetUserId(User).Equals(item.UserId))
+                    {
+                        UserInfoList.Add(new UserInfo(item, _context.Users.Where(x => x.Id.Equals(item.UserId)).First().UserName));
+                    }
                 }
             }
                 return View(UserInfoList);
@@ -186,7 +199,7 @@ namespace FYP.Controllers
                 };
                 _context.Notification.Add(notif);
                 _context.SaveChangesAsync().Wait();
-
+                
                 TempData["SignActionReturnMessage"] = "You have signed this file!";
             }
             else {
@@ -205,15 +218,16 @@ namespace FYP.Controllers
 
             UserAccess ua = _context.UserAccess.Where(x => x.UserId.Equals(_userManager.GetUserId(User))).First();
             List<string> FileList = new List<string>();
+            List<RetrievedFileViewModel> RetrievedFileViewModel = new List<RetrievedFileViewModel>();
 
-            if (ua.FileList != null) {
+            if (ua.FileList != "") {
                 foreach (var item in ua.FileList.Split("|"))
                 {
                     FileList.Add(_security.Decrypt(item));
                 }
+                RetrievedFileViewModel = _storage.GetFileListBasedOnUser(ua.AdminId, FileList);
             }
-            
-            return View(_storage.GetFileListBasedOnUser(ua.AdminId, FileList));
+            return View(RetrievedFileViewModel);
         }
 
         [HttpGet]

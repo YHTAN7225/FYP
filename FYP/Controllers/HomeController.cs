@@ -14,8 +14,8 @@ namespace FYP.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly FYPContext _context;
-        private Storage _storage;
-        private Security _security;
+        private readonly Storage _storage;
+        private readonly Security _security;
 
         public HomeController(FYPContext context, ILogger<HomeController> logger)
         {
@@ -77,25 +77,25 @@ namespace FYP.Controllers
             
         }
 
-        public IActionResult FileSubmissionViaLinkResult(FileViewModel model, string UserId, string LinkId)
+        public IActionResult FileSubmissionViaLinkResult(LinkFileViewModel model, string UserId, string LinkId)
         {
             Boolean success = true;
             AdminAccess AdminAccess = _context.AdminAccess.Where(x => x.UserList.Contains(UserId)).First();
             UserAccess UserAccess = _context.UserAccess.Where(x => x.UserId.Equals(UserId)).First();
-            foreach (var item in model.Files) {
-                success = _storage.UploadFile(AdminAccess.AdminId, item);
-                UserAccess.AddFileList(_security.Encrypt(item.FileName));
 
-                Notification notif = new Notification
-                {
-                    ActionName = "LINK_UPLOAD",
-                    PrimaryUserName = _context.Users.Where(x => x.Id.Equals(UserId)).First().UserName,
-                    SecondaryUserName = _context.Users.Where(x => x.Id.Equals(_context.UserAccess.Where(x => x.UserId.Equals(UserId)).First().AdminId)).First().UserName,
-                    FileName = item.FileName
-                };
-                _context.Notification.Add(notif);
-                _context.SaveChangesAsync().Wait();
-            }
+            success = _storage.UploadFile(AdminAccess.AdminId, model.Files);
+            UserAccess.AddFileList(_security.Encrypt(model.Files.FileName));
+
+            Notification notif = new Notification
+            {
+                ActionName = "LINK_UPLOAD",
+                PrimaryUserName = _context.Users.Where(x => x.Id.Equals(UserId)).First().UserName,
+                SecondaryUserName = _context.Users.Where(x => x.Id.Equals(_context.UserAccess.Where(x => x.UserId.Equals(UserId)).First().AdminId)).First().UserName,
+                FileName = model.Files.FileName
+            };
+            _context.Notification.Add(notif);
+            _context.SaveChangesAsync().Wait();
+            
             LinkStatus LinkStatus = _context.LinkStatus.Where(x => x.LinkId.Equals(LinkId)).First();
             LinkStatus.Submitted = "true";    
             _context.SaveChangesAsync();

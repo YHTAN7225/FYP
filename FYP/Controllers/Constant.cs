@@ -46,7 +46,7 @@
                 case "SIGNATURE":
                     return SecondaryName + " has signed a document (" + FileName + ") requested by " + PrimaryName + ".";
                 case "REQUEST":
-                    return "You have requested access of file {" + FileName + "} to " + SecondaryName + " from admin.";
+                    return PrimaryName + " have requested access of file {" + FileName + "} to " + SecondaryName + " from admin.";
                 case "APPROVED":
                     return "Admin has approved access of file {" + FileName + "} as per request from " + PrimaryName + " to " + SecondaryName + ".";
                 case "REJECTED":

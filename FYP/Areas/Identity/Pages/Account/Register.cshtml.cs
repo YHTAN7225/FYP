@@ -111,14 +111,15 @@ namespace FYP.Areas.Identity.Pages.Account
                     Storage storage = new Storage();
                     storage.CreateNewFolder(user.Id); 
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    if (_userManager.Options.SignIn.RequireConfirmedAccount) 
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        TempData["RegisterReturnMessage"] = "Welcome to StoreDoc";
+                        return LocalRedirect("~/Admin/Index");
                     }
                 }
                 foreach (var error in result.Errors)

@@ -4,7 +4,8 @@
     ViewData["Title"] = "Approve";
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<string> ModelId = new List<string>();
-    foreach (var item in Model) {
+    foreach (var item in Model)
+    {
         ModelId.Add(item.ApproveId);
     }
 
@@ -16,7 +17,7 @@
 <h5>Below are the request from users.</h5>
 
 <form asp-action="ApproveAllRequest" asp-route-IdList=@IdList method="post" class="d-inline-block float-right p-2">
-    <input type="submit" value="Approve All Request" class="btn btn-primary"/>
+    <input type="submit" value="Approve All Request" class="btn btn-primary" />
 </form>
 <form asp-action="RejectAllRequest" asp-route-IdList=@IdList method="post" class="d-inline-block float-right p-2">
     <input type="submit" value="Reject All Request" class="btn btn-secondary" />
@@ -25,48 +26,85 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                Time of Request
-            </th>
-            <th>
-                Sender
-            </th>
-            <th>
-                Receiver
-            </th>
-            <th>
-                File Name
-            </th>
+            <th>Time of Request</th>
+            <th>Sender</th>
+            <th>Receiver</th>
+            <th>File Name</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (!Model.Any())
         {
-        <tr>
-            <td>
-                @item.TimeStamp
-            </td>
-            <td>
-                @item.SenderUserName
-            </td>
-            <td>
-                @item.ReceiverUserName
-            </td>
-            <td>
-                @item.FileName
-            </td>
-            <td>
-                <div class="btn-group float-right">
-                    <form asp-action="ApproveRequest" asp-route-ApproveId=@item.ApproveId class="d-inline-block">
-                        <input type="submit" value="Approve" class="btn btn-primary" />
-                    </form>
-                    <form asp-action="RejectRequest" asp-route-ApproveId=@item.ApproveId class="d-inline-block">
-                        <input type="submit" value="Reject" class="btn btn-secondary" />
-                    </form>
-                </div>
-            </td>
-        </tr>
+            <tr>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td></td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.TimeStamp
+                    </td>
+                    <td>
+                        @item.SenderUserName
+                    </td>
+                    <td>
+                        @item.ReceiverUserName
+                    </td>
+                    <td>
+                        @item.FileName
+                    </td>
+                    <td>
+                        <div class="btn-group float-right">
+                            <form asp-action="ApproveRequest" asp-route-ApproveId=@item.ApproveId>
+                                <input type="submit" value="Approve" class="btn btn-primary" />
+                            </form>
+                            <form asp-action="RejectRequest" asp-route-ApproveId=@item.ApproveId>
+                                <input type="submit" value="Reject" class="btn btn-secondary" />
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>
+
+@if (TempData["ApproveRequestReturnMessage"] != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@TempData["ApproveRequestReturnMessage"]");
+            };
+    </script>
+}
+@if (TempData["RejectRequestReturnMessage"] != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@TempData["RejectRequestReturnMessage"]");
+            };
+    </script>
+}
+@if (TempData["ApproveAllRequestReturnMessage"] != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@TempData["ApproveAllRequestReturnMessage"]");
+            };
+    </script>
+}
+@if (TempData["RejectAllRequestReturnMessage"] != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@TempData["RejectAllRequestReturnMessage"]");
+            };
+    </script>
+}

@@ -16,26 +16,37 @@
         <tr>
             <th>File Name</th>
             <th>Last Modified</th>
-            <th>Actions</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (!Model.Any())
         {
             <tr>
-                <td>@item.RetrievedFile.Name</td>
-                <td>@item.RetrievedFile.Properties.LastModified.GetValueOrDefault().ToLocalTime().DateTime</td>
-                <td>
-                    <div class="btn-group float-right">
-                        <form asp-action="Authorize" asp-route-FileName=@item.RetrievedFile.Name class="d-inline-block mx-1">
-                            <input type="submit" value="Authorize" class="btn btn-primary" />
-                        </form>
-                        <form asp-action="Delete" asp-route-FileName=@item.RetrievedFile.Name class="d-inline-block mx-1">
-                            <input type="submit" value="Delete" class="btn btn-secondary" />
-                        </form>
-                    </div>
-                </td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td></td>
             </tr>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.RetrievedFile.Name</td>
+                    <td>@item.RetrievedFile.Properties.LastModified.GetValueOrDefault().ToLocalTime().DateTime</td>
+                    <td>
+                        <div class="btn-group float-right">
+                            <form asp-action="Authorize" asp-route-FileName=@item.RetrievedFile.Name class="d-inline-block mx-1">
+                                <input type="submit" value="Authorize" class="btn btn-primary" />
+                            </form>
+                            <form asp-action="Delete" asp-route-FileName=@item.RetrievedFile.Name class="d-inline-block mx-1">
+                                <input type="submit" value="Delete" class="btn btn-secondary" />
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>

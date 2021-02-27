@@ -67,5 +67,17 @@ namespace FYP.Models
                 }
             }
         }
+
+        public Boolean HaveFile(string FileName) {
+            List<string> list = this.FileList.Split("|").ToList();
+            Security sec = new Security();
+
+            foreach (var item in list) {
+                if (sec.Decrypt(item).Equals(FileName)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

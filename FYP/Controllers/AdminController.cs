@@ -16,10 +16,10 @@ namespace FYP.Controllers
     public class AdminController : Controller
     {
         private readonly FYPContext _context;
-        private UserManager<IdentityUser> _userManager;
-        private Storage _storage;
-        private Security _security;
-        private Constant _constant;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly Storage _storage;
+        private readonly Security _security;
+        private readonly Constant _constant;
 
         public AdminController(FYPContext context, UserManager<IdentityUser> userManager)
         {
@@ -59,7 +59,7 @@ namespace FYP.Controllers
                 return BadRequest();
             }
 
-            List<Activities> ActivitiesList = new List<Activities>();
+            List<ActivitiesViewModel> ActivitiesList = new List<ActivitiesViewModel>();
             List<Notification> NotificationList = _context.Notification.ToList();
             var user = _context.Users.Where(x => x.Id.Equals(_userManager.GetUserId(User))).First();
 
@@ -67,7 +67,7 @@ namespace FYP.Controllers
             {
                 if ((item.PrimaryUserName == user.UserName) || (item.SecondaryUserName == user.UserName))
                 {
-                    var act = new Activities
+                    var act = new ActivitiesViewModel
                     {
                         Activity = _constant.AdminGetMessage(item.ActionName, item.PrimaryUserName, item.SecondaryUserName, item.FileName),
                         TimeStamp = item.TimeStamp
@@ -438,7 +438,7 @@ namespace FYP.Controllers
             {
                 ViewBag.UploadReturnMessage = "Upload Successful!";
             }
-            return View();
+            return RedirectToAction("Files", "Admin");
         }
 
         public IActionResult CreateUser()
@@ -497,8 +497,12 @@ namespace FYP.Controllers
                     _context.Notification.Add(notif);
                     _context.SaveChangesAsync().Wait();
 
-                    TempData["CreateUserReturnMessage"] = "A new user has been created!";
+                    TempData["CreateUserReturnMessage"] = "Successfully created a new user!";
                 }
+                else {
+                    TempData["CreateUserReturnMessage"] = "Error when creating user! Email already exist in system!";
+                }
+                
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -619,7 +623,7 @@ namespace FYP.Controllers
                     return RedirectToAction("Files", "Admin");
                 }
                 else {
-                    UserAccess.FileList = UserAccess.FileList + "|" + _security.Encrypt(FileName);
+                    UserAccess.AddFileList(_security.Encrypt(FileName));
                 }
             }
             _context.UserAccess.Update(UserAccess);

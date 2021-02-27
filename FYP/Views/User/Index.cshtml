@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Activities>
+﻿@model IEnumerable<ActivitiesViewModel>
 
 @{
     ViewData["Title"] = "Home";
@@ -21,16 +21,26 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (!Model.Any())
         {
             <tr>
-                <td>
-                    @item.Activity
-                </td>
-                <td>
-                    @item.TimeStamp
-                </td>
+                <td>N/A</td>
+                <td>N/A</td>
             </tr>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Activity
+                    </td>
+                    <td>
+                        @item.TimeStamp
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>

@@ -10,17 +10,21 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                File Name
-            </th>
-            <th>
-                Last Modified
-            </th>
+            <th>File Name</th>
+            <th>Last Modified</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @if (Model.Any())
+        @if (!Model.Any())
+        {
+            <tr>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td></td>
+            </tr>
+        }
+        else
         {
             @foreach (var item in Model)
             {
@@ -39,15 +43,6 @@
                 </tr>
             }
         }
-        else
-        {
-            <tr>
-                <td>N/A</td>
-                <td>N/A</td>
-                <td></td>
-            </tr>
-        }
-
     </tbody>
 </table>
 

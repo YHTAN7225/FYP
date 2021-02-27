@@ -15,12 +15,10 @@ namespace FYP.Controllers
 {
     public class Storage
     {
-        private CloudStorageAccount StorageAccount;
-        private Security _security;
+        private readonly CloudStorageAccount StorageAccount;
 
         public Storage() {
             this.StorageAccount = CloudStorageAccount.Parse(Constant.AzureConnectionString);
-            this._security = new Security();
         }
 
         public void CreateNewFolder(string FolderName)
@@ -65,12 +63,20 @@ namespace FYP.Controllers
             CloudFileShare FileShare = GetFileShare(AdminId);
 
             CloudFile FileToUpload = FileShare.GetRootDirectoryReference().GetFileReference(file.FileName);
-            Task result = FileToUpload.UploadFromStreamAsync(file.OpenReadStream());
-            result.Wait();
 
-            var tag = FileToUpload.Properties.ETag;
+            if (FileToUpload.ExistsAsync().Result) {
+                string FileNameIfExist = Path.GetFileNameWithoutExtension(file.FileName) + "(2)" + Path.GetExtension(file.FileName);
+                FileToUpload = FileShare.GetRootDirectoryReference().GetFileReference(FileNameIfExist);
 
-            return result.IsCompletedSuccessfully;
+                Task result = FileToUpload.UploadFromStreamAsync(file.OpenReadStream());
+                result.Wait();
+                return result.IsCompletedSuccessfully;
+            }
+            else {
+                Task result = FileToUpload.UploadFromStreamAsync(file.OpenReadStream());
+                result.Wait();
+                return result.IsCompletedSuccessfully;
+            }
         }
 
         public async Task<Stream> DownloadFileAsync(string AdminId, string FileName) {

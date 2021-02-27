@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Activities>
+﻿@model IEnumerable<ActivitiesViewModel>
 
 @{
     ViewData["Title"] = "Home";
@@ -12,25 +12,41 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                Activities
-            </th>
-            <th>
-                Time 
-            </th>
+            <th>Activities</th>
+            <th>Time</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (!Model.Any())
         {
             <tr>
-                <td>
-                    @item.Activity
-                </td>
-                <td>
-                    @item.TimeStamp
-                </td>
+                <td>N/A</td>
+                <td>N/A</td>
             </tr>
         }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Activity
+                    </td>
+                    <td>
+                        @item.TimeStamp
+                    </td>
+                </tr>
+            }
+        }
+
     </tbody>
 </table>
+
+@if (TempData["RegisterReturnMessage"] != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@TempData["RegisterReturnMessage"]");
+            };
+    </script>
+}

@@ -17,26 +17,36 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (!Model.Any())
         {
             <tr>
-                <td>@item.RetrievedFile.Name</td>
-                <td>@item.RetrievedFile.Properties.LastModified.GetValueOrDefault().ToLocalTime().DateTime</td>
-                <td>
-                    <div class="btn-group float-right">
-                        <form asp-action="Share" asp-route-FileName="@item.RetrievedFile.Name">
-                            <input type="submit" value="Share" class="btn btn-primary mx-1" />
-                        </form>
-                        <form asp-action="Download" asp-route-FileName="@item.RetrievedFile.Name">
-                            <input type="submit" value="Download" class="btn btn-primary mx-1" />
-                        </form>
-                        <form asp-action="CreateSignRequest" asp-route-FileName="@item.RetrievedFile.Name">
-                            <input type="submit" value="Signature" class="btn btn-primary mx-1" />
-                        </form>
-                    </div>
-
-                </td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td></td>
             </tr>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.RetrievedFile.Name</td>
+                    <td>@item.RetrievedFile.Properties.LastModified.GetValueOrDefault().ToLocalTime().DateTime</td>
+                    <td>
+                        <div class="btn-group float-right">
+                            <form asp-action="Share" asp-route-FileName="@item.RetrievedFile.Name">
+                                <input type="submit" value="Share" class="btn btn-primary mx-1" />
+                            </form>
+                            <form asp-action="Download" asp-route-FileName="@item.RetrievedFile.Name">
+                                <input type="submit" value="Download" class="btn btn-primary mx-1" />
+                            </form>
+                            <form asp-action="CreateSignRequest" asp-route-FileName="@item.RetrievedFile.Name">
+                                <input type="submit" value="Signature" class="btn btn-primary mx-1" />
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>

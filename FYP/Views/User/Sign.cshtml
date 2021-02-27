@@ -1,4 +1,4 @@
-﻿@model DoubleSignatureRequest
+﻿@model FYP.Models.DoubleSignatureRequest
 
 @{
     ViewData["Title"] = "Sign";
@@ -18,37 +18,43 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                Time
-            </th>
-            <th>
-                Sender
-            </th>
-            <th>
-                File Name
-            </th>
+            <th>Time</th>
+            <th>Sender</th>
+            <th>File Name</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.UserAsReceiver)
+        @if (!Model.UserAsReceiver.Any())
         {
-        <tr>
-            <td>
-                @item.TimeStamp
-            </td>
-            <td>
-                @item.SenderUserName
-            </td>
-            <td>
-                @item.FileName
-            </td>
-            <td>
-                <form asp-action="SignAction" asp-route-SignatureId="@item.SignatureId">
-                    <input type="submit" value="Sign" class="btn btn-primary" />
-                </form>
-            </td>
-        </tr>
+            <tr>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td></td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var item in Model.UserAsReceiver)
+            {
+                <tr>
+                    <td>
+                        @item.TimeStamp
+                    </td>
+                    <td>
+                        @item.SenderUserName
+                    </td>
+                    <td>
+                        @item.FileName
+                    </td>
+                    <td>
+                        <form asp-action="SignAction" asp-route-SignatureId="@item.SignatureId">
+                            <input type="submit" value="Sign" class="btn btn-primary" />
+                        </form>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>
@@ -59,37 +65,42 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                Time Created
-            </th>
-            <th>
-                Receiver
-            </th>
-            <th>
-                File Name
-            </th>
-            <th>
-                Time Signed
-            </th>
+            <th>Time Created</th>
+            <th>Receiver</th>
+            <th>File Name</th>
+            <th>Time Signed</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.UserAsSender)
+        @if (!Model.UserAsSender.Any())
         {
-        <tr>
-            <td>
-                @item.TimeStamp
-            </td>
-            <td>
-                @item.ReceiverUserName
-            </td>
-            <td>
-                @item.FileName
-            </td>
-            <td>
-                @item.StringIsSigned()
-            </td>
-        </tr>
+            <tr>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+            </tr>
         }
+        else
+        {
+            @foreach (var item in Model.UserAsSender)
+            {
+                <tr>
+                    <td>
+                        @item.TimeStamp
+                    </td>
+                    <td>
+                        @item.ReceiverUserName
+                    </td>
+                    <td>
+                        @item.FileName
+                    </td>
+                    <td>
+                        @item.StringIsSigned()
+                    </td>
+                </tr>
+            }
+        }
+
     </tbody>
 </table>

@@ -14,36 +14,43 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                User Id
-            </th>
-            <th>
-                User Email
-            </th>
+            <th>User Id</th>
+            <th>User Email</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (!Model.Any())
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserAccess.UserId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserName)
-                </td>
-                <td>
-                    <div class="btn-group float-right">
-                        <form asp-action="DeleteUser" asp-route-UserId=@item.UserAccess.UserId class="d-inline-block mx-1">
-                            <input type="submit" value="Delete User" class="btn btn-primary" />
-                        </form>
-                        <form asp-action="Unauthorize" asp-route-UserId=@item.UserAccess.UserId class="d-inline-block mx-1">
-                            <input type="submit" value="View File" class="btn btn-secondary" />
-                        </form>
-                    </div>
-                </td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td></td>
             </tr>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserAccess.UserId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        <div class="btn-group float-right">
+                            <form asp-action="DeleteUser" asp-route-UserId=@item.UserAccess.UserId class="d-inline-block mx-1">
+                                <input type="submit" value="Delete User" class="btn btn-primary" />
+                            </form>
+                            <form asp-action="Unauthorize" asp-route-UserId=@item.UserAccess.UserId class="d-inline-block mx-1">
+                                <input type="submit" value="View File" class="btn btn-secondary" />
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>
