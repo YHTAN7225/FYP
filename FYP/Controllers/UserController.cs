@@ -230,7 +230,6 @@ namespace FYP.Controllers
             return View(RetrievedFileViewModel);
         }
 
-        [HttpGet]
         public IActionResult Download(string FileName)
         {
             if (!UserRoleCheck())

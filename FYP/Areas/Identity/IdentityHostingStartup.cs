@@ -17,7 +17,7 @@ namespace FYP.Areas.Identity
             builder.ConfigureServices((context, services) => {
                 services.AddDbContext<FYPContext>(options =>
                     options.UseSqlServer(
-                        context.Configuration.GetConnectionString("FYPContextConnection")));
+                        context.Configuration.GetConnectionString("FYPDbConnectionString")));
                 services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<FYPContext>();
