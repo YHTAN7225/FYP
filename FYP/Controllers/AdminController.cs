@@ -202,6 +202,9 @@ namespace FYP.Controllers
             {
                 return BadRequest();
             }
+            if (IdList.Equals("")) {
+                return RedirectToAction("Approve", "Admin");
+            }
 
             List<string> ApproveIdList = IdList.Split("|").ToList();
 
@@ -269,6 +272,10 @@ namespace FYP.Controllers
             if (!AdminRoleCheck())
             {
                 return BadRequest();
+            }
+            if (IdList.Equals(""))
+            {
+                return RedirectToAction("Approve", "Admin");
             }
 
             List<string> ApproveIdList = IdList.Split("|").ToList();
