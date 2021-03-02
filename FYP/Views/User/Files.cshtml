@@ -31,7 +31,7 @@
             {
                 <tr>
                     <td>@item.RetrievedFile.Name</td>
-                    <td>@item.RetrievedFile.Properties.LastModified.GetValueOrDefault().ToLocalTime().DateTime</td>
+                    <td>@item.RetrievedFile.Properties.LastModified.GetValueOrDefault().ToOffset(new TimeSpan(8, 0, 0)).DateTime</td>
                     <td>
                         <div class="btn-group float-right">
                             <form asp-action="Share" asp-route-FileName="@item.RetrievedFile.Name">

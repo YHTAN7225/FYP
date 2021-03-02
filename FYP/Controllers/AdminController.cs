@@ -31,12 +31,19 @@ namespace FYP.Controllers
         }
 
         private Boolean AdminRoleCheck() {
-            if (User.IsInRole("admin")) {
-                return true;
+            try
+            {
+                if (User.IsInRole("admin")) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
-            else {
+            catch{
                 return false;
             }
+            
         }
 
         private List<UserInfo> GetUserList()
@@ -202,7 +209,7 @@ namespace FYP.Controllers
             {
                 return BadRequest();
             }
-            if (IdList.Equals("")) {
+            if (IdList == null) {
                 return RedirectToAction("Approve", "Admin");
             }
 
@@ -273,7 +280,7 @@ namespace FYP.Controllers
             {
                 return BadRequest();
             }
-            if (IdList.Equals(""))
+            if (IdList == null)
             {
                 return RedirectToAction("Approve", "Admin");
             }

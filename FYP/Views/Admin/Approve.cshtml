@@ -16,12 +16,16 @@
 <h1>Approve</h1>
 <h5>Below are the request from users.</h5>
 
-<form asp-action="ApproveAllRequest" asp-route-IdList=@IdList method="post" class="d-inline-block float-right p-2">
-    <input type="submit" value="Approve All Request" class="btn btn-primary" />
-</form>
-<form asp-action="RejectAllRequest" asp-route-IdList=@IdList method="post" class="d-inline-block float-right p-2">
-    <input type="submit" value="Reject All Request" class="btn btn-secondary" />
-</form>
+@if (!Model.Any())
+{
+    <form asp-action="ApproveAllRequest" asp-route-IdList=@IdList method="post" class="d-inline-block float-right p-2">
+        <input type="submit" value="Approve All Request" class="btn btn-primary" />
+    </form>
+    <form asp-action="RejectAllRequest" asp-route-IdList=@IdList method="post" class="d-inline-block float-right p-2">
+        <input type="submit" value="Reject All Request" class="btn btn-secondary" />
+    </form>
+}
+
 
 <table class="table">
     <thead>
