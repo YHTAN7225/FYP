@@ -123,6 +123,7 @@ namespace FYP.Controllers
                 TempData["ApproveRequestReturnMessage"] = "The request has been approved!";
                 _context.ApprovalRequest.Remove(ApprovalRequest);
                 var RemoveResult = _context.SaveChangesAsync();
+                RemoveResult.Wait();
                 if (!RemoveResult.IsCompletedSuccessfully) {
                     TempData["ApproveRequestReturnMessage"] = "The request has been approved, but database is not updated!";
                 }
@@ -135,6 +136,7 @@ namespace FYP.Controllers
                     FileName = _security.Decrypt(ApprovalRequest.FileId)
                 };
                 _context.Notification.Add(notif);
+                _context.SaveChangesAsync().Wait();
 
                 Notification notif2 = new Notification
                 {
