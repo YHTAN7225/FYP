@@ -108,7 +108,7 @@ namespace FYP.Controllers
 
             foreach (var item in list) {
                 if (!item.IsSigned()) {
-                    list.Add(item);
+                    UserAsReceiver.Add(item);
                 }
             }
 
