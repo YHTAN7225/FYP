@@ -93,7 +93,8 @@ namespace FYP.Controllers
             
             LinkStatus LinkStatus = _context.LinkStatus.Where(x => x.LinkId.Equals(LinkId)).First();
             LinkStatus.Submitted = "true";    
-            _context.SaveChangesAsync();
+            _context.SaveChangesAsync().Wait();
+
 
             if (success) {
                 TempData["FileSubmissionViaLinkReturnMessage"] = "File has been Uploaded Successfully!";
